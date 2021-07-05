@@ -123,9 +123,10 @@ app.get('/all/users', (req, res) => {
     .get()
     .then(querySnapshot => {
       const documents = querySnapshot.docs.map(doc => doc.data())
-        res.send(documents);  
+        res.send(documents[0]);  
     })
 })
+
 
 const port = process.env.PORT || 8080
 server.listen(port, () => { console.log("server is running on " + port) });

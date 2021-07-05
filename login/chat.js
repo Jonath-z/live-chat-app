@@ -6,14 +6,28 @@ fetch('../all/users')
     })
     .then(data => {
         console.log(data);
-        data.forEach(user => {
-            // const div = document.createElement('div');
-            // div.classList = 'userOnChat';
-            // const img = document.createElement('img');
-            // img.classList = 'userProfile';
-            // img.src = `${user.defaultProfile}`
-            // div.appendChild(img);
-            // chatUser.appendChild(img)
-            console.log(user.defaultProfile);
+        const dataTable = [];
+        dataTable.push(data);
+        dataTable.forEach(user => {
+            const userChat = `<div class="userChatDiv"><img src="${user.defaultProfile}" alt="profile" class="userChatProfile"> ${user.data.name}</div><hr>`;
+            chatUser.innerHTML = userChat;
+            const userChatProfile = document.querySelector('.userChatDiv');
+            userChatProfile.addEventListener('click', openChat);
+            function openChat() {
+                const user = userChatProfile.firstElementChild;
+                const userProfile = user.getAttribute('src');
+                fetch('../open/chat', {
+                    method: "POST",
+                    headers: {
+                        'Accept': '*/*',
+                        'Content-Type': 'application/json'
+                      },
+
+                })
+                console.log(userProfile);
+
+            }
         });
+        
     })
+
