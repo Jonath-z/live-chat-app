@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/chat.css">
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Chat</title>
+</head>
+<body>
+<header>
+    <div class="navBar">
+  <%- `<nav><img src="${data.defaultProfile}" alt="image" class="chatProfile"> ${data.name}</nav>`%>  
+</header>
+    <div class="reseach">
+        <input type="search" name="search" id="searchBar">
+    </div>
+    <div class="onlineUsers">
+
+    </div>
+  
+    </div><div class="chatUsers">
+<footer class="icons">
+    <div class="downbar">
+        <ul class="icons">
+            <i class="fa fa-comment" style="font-size:24px"></i>
+            <i class="material-icons" style="font-size:36px"></i>
+            <i class="material-icons">&#xe7ef;</i>
+        </ul>
+    </div>
+</footer>
+    <script src="/statics/chat.js"></script>
+</body>
+</html>
