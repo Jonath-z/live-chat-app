@@ -12,10 +12,12 @@ const passport = require('passport');
 const { Console } = require('console');
 const fs = require('file-system');
 const { storage } = require('firebase-admin');
+const favicon = require('serve-favicon');
 
 
 
 // middleware
+app.use(favicon(path.join(__dirname, './public', 'favicon.ico')));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/statics', express.static(path.join(__dirname, './login')));
@@ -70,7 +72,6 @@ app.post('/login/user', (req, res) => {
                     data: doc.data()
                 });
             })
-
         }
     }
     getUser();
@@ -98,7 +99,7 @@ app.post('/login', (req, res) => {
     const userDoc = db.collection('user');
     // console.log(req.body);
     async function getUser() {
-        const snapshot = await userDoc.where("password", "==", req.body.password).where("data.name","==",req.body.name).get();
+        const snapshot = await userDoc.where("password", "==", req.body.password).where("data.name", "==", req.body.name).get();
         if (snapshot.empty) {
             console.log("no data");
             res.redirect('/');
@@ -109,8 +110,8 @@ app.post('/login', (req, res) => {
                 res.render('chat', {
                     data: doc.data()
                 });
+               
             })
-
         }
     }
     getUser();
@@ -126,6 +127,41 @@ app.get('/all/users', (req, res) => {
         res.send(documents[0]);  
     })
 })
+
+app.post('/open/chat', (req, res) => {
+    const userProfile = req.body.url;
+    const userDoc = db.collection('user');
+    async function getUserInfo() {
+        const snapshot = await userDoc.where("defaultProfile", "==", userProfile).get();
+        if (snapshot.empty) {
+            console.log('no data');
+        }
+        else {
+            snapshot.forEach(doc => {
+                res.send(doc.data()); 
+                    
+            })
+        }
+    }
+    getUserInfo();
+
+});
+
+app.get('/user/chat', (req, res) => {
+    res.render('userChat');
+    
+    io.on('connection', (socket) => {
+        console.log(socket.id);
+        if (socket.id > 1) {
+            console.log('disconnected');
+        }
+        socket.on('message', (data) => {
+            console.log(data);
+            socket.emit('message', data);
+        });
+    });
+});
+
 
 
 const port = process.env.PORT || 8080
