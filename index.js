@@ -124,7 +124,7 @@ app.get('/all/users', (req, res) => {
     .get()
     .then(querySnapshot => {
       const documents = querySnapshot.docs.map(doc => doc.data())
-        res.send(documents[0]);  
+        res.send(documents)
     })
 })
 
@@ -147,18 +147,16 @@ app.post('/open/chat', (req, res) => {
 
 });
 
-app.get('/user/chat', (req, res) => {
+app.get('/live/chat', (req, res) => {
     res.render('userChat');
+});
+
     
-    io.on('connection', (socket) => {
-        console.log(socket.id);
-        if (socket.id > 1) {
-            console.log('disconnected');
-        }
-        socket.on('message', (data) => {
-            console.log(data);
-            socket.emit('message', data);
-        });
+io.on('connection', (socket) => {
+    console.log(socket.id);
+    socket.on('message', (data) => {
+        console.log(data);
+        socket.emit('message', data);
     });
 });
 

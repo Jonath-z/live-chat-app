@@ -1,7 +1,7 @@
 
 const messageIput = document.getElementById('messageInput')
 
-// const socket = io('http://localhost:8080');
+const socket = io('http://localhost:8080');
 
 const sendButton = document.querySelector('.send');
 sendButton.addEventListener('click', sendMessage);
