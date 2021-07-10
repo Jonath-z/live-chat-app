@@ -1,70 +1,83 @@
-const navbarImage = document.querySelector('.chatProfile');
-
 
 fetch('../all/users')
     .then(res => {
         return res.json();
     })
     .then(data => {
-        console.log(data);
+        // console.log(data);
 
-        data.map(user => {
-            const chatUserDiv = document.querySelector('.chatUsers');
-            // const userChat = `<div class="userChatDiv"><img src="${user.defaultProfile}" alt="profile" class="userChatProfile"> ${user.data.name}</div><hr>`;
-            const div = document.createElement('div');
-            div.classList = 'userChatDiv';
-            const img = document.createElement('img');
-            img.src = user.defaultProfile;
-            img.alt = 'profile';
-            img.classList = 'userChatProfile';
-            const para = document.createElement('p');
-            para.classList = 'username';
-            para.innerText = user.data.name;
-            const hr = document.createElement('hr');
-
-            div.append(img, para);
-            chatUserDiv.append(div, hr);
-            
-            // chatUserDiv.appendChild(userChatProfile);
-            // console.log(userChat);
-            // console.log(chatUserDiv);
-            
+        const navbarImage = document.querySelector('.chatProfile');
+        const deleteProfile = navbarImage.src;
+        const ddeleteUSerName = navbarImage.nextSibling.firstChild.data;
+        data.find(function (posts, index) {
+            if (posts.data.name == `${ddeleteUSerName}` && posts.defaultProfile == `${deleteProfile}`) {
+                // console.log(posts);
+                // console.log(index);
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i] === posts) {
+                        const userDeleted = data.splice(i, 1);
+                        i--;
+                        // console.log(userDeleted);
+                        // console.log(data);
+                        data.map(user => {
+                            const chatUserDiv = document.querySelector('.chatUsers');
+                            // const userChat = `<div class="userChatDiv"><img src="${user.defaultProfile}" alt="profile" class="userChatProfile"> ${user.data.name}</div><hr>`;
+                            const div = document.createElement('div');
+                            div.classList = 'userChatDiv';
+                            const img = document.createElement('img');
+                            img.src = user.defaultProfile;
+                            img.alt = 'profile';
+                            img.classList = 'userChatProfile';
+                            const para = document.createElement('p');
+                            para.classList = 'username';
+                            para.innerText = user.data.name;
+                            const hr = document.createElement('hr');
                 
-            // console.log(userProfile);
-        
+                            div.append(img, para);
+                            chatUserDiv.append(div, hr);
+                            
+                            // chatUserDiv.appendChild(userChatProfile);
+                            // console.log(userChat);
+                            // console.log(chatUserDiv); 
+                            // console.log(userProfile);
+                        });
+
+                    }
+                }
+                return true;
+            }
         });
+
         const userChatEvent = document.querySelectorAll('.userChatDiv');
         userChatEvent.forEach(event => {
             event.addEventListener('click', () => {
                 console.log(event);
-
-                const user = event.firstElementChild;
-                const userProfile = user.getAttribute('src');
-                const url = userProfile;
-                // window.open('../live/chat', '_self');
-        
-                fetch('../open/chat', {
+                const user = event.textContent;
+                const userProfile = event.firstElementChild;
+                const url = userProfile.getAttribute('src');
+                fetch('../live', {
                     method: "POST",
                     headers: {
                         'Accept': '*/*',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ url })
-                })
-                    .then(res => {
-                        return res.json()
+                    body: JSON.stringify({
+                        url: url,
+                        name: user
                     })
-                    .then(data => {
-                        console.log(data);
-                        // window.open(`../user/chat?id=${data.data.id}`, "_self")
-                        // socket.on('connection');
-                    })
-                    .catch(err => {
-                        console.log(err);
-                })
+                }).then(res => {
+                    return res.text();
+                }).then(data => {
+                    // console.log(data);
+                    window.open('../live/chat')
+                        .document.write(`${data}`);
+                });
             });
         });
+        
     });
 
+// const userSection = document.querySelector('.userInformation');
+// console.log(userSection);
 
 

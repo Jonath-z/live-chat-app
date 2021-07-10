@@ -26,9 +26,9 @@ app.set('view engine', 'ejs');
   
 firestore.initializeApp({
     credential: firestore.credential.cert(serviceAccount)
-})
+});
 const db = firestore.firestore();
-const storageFiebase = firestore.storage()
+const storageFiebase = firestore.storage();
 
 
 
@@ -38,8 +38,8 @@ app.get('/', (req, res) => {
 
 // login page
 app.get('/login/user', (req, res) => {
-    res.render('index')
-})
+    res.render('index');
+});
 
 app.get('/chat', (req, res) => {
     const userDoc = db.collection('user');
@@ -50,11 +50,11 @@ app.get('/chat', (req, res) => {
         }
         snapshot.forEach(doc => {
             console.log(doc);
-        })
+        });
         res.render('chat');
     }
     chatUser();
-})
+});
 
 app.post('/login/user', (req, res) => {
     const userDoc = db.collection('user');
@@ -71,7 +71,7 @@ app.post('/login/user', (req, res) => {
                 res.render('chat', {
                     data: doc.data()
                 });
-            })
+            });
         }
     }
     getUser();
@@ -79,7 +79,7 @@ app.post('/login/user', (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
-    res.render('signup')
+    res.render('signup');
 });
 
 app.post('/signup/user', (req, res) => {
@@ -93,7 +93,7 @@ app.post('/signup/user', (req, res) => {
     }
     setUser();
     // console.log(req.body);
-})
+});
 
 app.post('/login', (req, res) => {
     const userDoc = db.collection('user');
@@ -111,22 +111,22 @@ app.post('/login', (req, res) => {
                     data: doc.data()
                 });
                
-            })
+            });
         }
     }
     getUser();
     // res.render('chat');
-})
+});
 
 // get all users
 app.get('/all/users', (req, res) => {
     db.collection('user')
-    .get()
-    .then(querySnapshot => {
-      const documents = querySnapshot.docs.map(doc => doc.data())
-        res.send(documents)
-    })
-})
+        .get()
+        .then(querySnapshot => {
+            const documents = querySnapshot.docs.map(doc => doc.data())
+            res.send(documents)
+        });
+});
 
 app.post('/open/chat', (req, res) => {
     const userProfile = req.body.url;
@@ -138,9 +138,9 @@ app.post('/open/chat', (req, res) => {
         }
         else {
             snapshot.forEach(doc => {
-                res.send(doc.data()); 
+                res.send(doc.data());
                     
-            })
+            });
         }
     }
     getUserInfo();
@@ -151,16 +151,24 @@ app.get('/live/chat', (req, res) => {
     res.render('userChat');
 });
 
-    
+app.post('/live', (req, res) => {
+    console.log(req.body);
+    res.render('userChat', {
+        url: req.body.url,
+        name: req.body.name
+    });
+});
+// socket io server side
 io.on('connection', (socket) => {
     console.log(socket.id);
-    socket.on('message', (data) => {
-        console.log(data);
-        socket.emit('message', data);
+    // listen the message sent
+    socket.on('sendMessage', (msg,receiver) => {
+        // emit the message sent
+        socket.to(`${receiver}`).emit('message', msg);
+        console.log(msg,receiver);
     });
 });
 
 
-
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8000
 server.listen(port, () => { console.log("server is running on " + port) });

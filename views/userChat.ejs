@@ -12,17 +12,21 @@
   <title>Chat</title>
 </head>
 <body>
+  <section class="userInformation">
+      <%- `<img src="${url}" alt="profile" class="userChatProfile">` %>
+      <%- `<p class="userName">${name}</p>` %>
+  </section>
 <section class="chatSection">
 <div class="incomeMessage"></div>
 <div class="outcomeMessage"></div>
-
 </section>
 
 
 <footer>
-<div class="messageInput">
-<input type="text" name="message" placeholder="message here" id="messageInput"><button class="send">send</button>
+<div class="messageInput"> 
+<input type="text" name="message" placeholder="message here" id="messageInput"><button type="submit" class="send">send</button>
 </footer>
 
 <script src="/statics/socket.js"></script>
+<script src="/statics/chat.js"></script>
 </body>

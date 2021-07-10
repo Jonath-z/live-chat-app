@@ -1,18 +1,28 @@
 
-const messageIput = document.getElementById('messageInput')
+const socket = io('http://localhost:8000');
+socket.on('connection');
 
-const socket = io('http://localhost:8080');
+// set receiver
+const userReceiver = document.querySelector('.userName').textContent;
 
+// get the send button
 const sendButton = document.querySelector('.send');
-sendButton.addEventListener('click', sendMessage);
-function sendMessage() {
-    const msg = messageIput.value;
-    socket.emit('message', msg);
-    console.log(msg);
+
+sendButton.addEventListener('click', () => {
+    // get the input message form
+    const messageInput = document.getElementById('messageInput');
+    // get the input message value
+    const message = messageInput.value;
+    // console.log(message);
+    // send the massage to the receiver
+    socket.emit('sendMessage', `${message}`, `${userReceiver} from ${socket.id}`);
+    console.log(socket.id);
+})
+function receiveMessage() {
+    const incomeMessage = document.querySelector('.incomeMessage');
+    socket.on('message', message => {
+        incomeMessage.innerHTML = `${incomeMessage}`;
+        console.log(message);
+    })
 }
-const outcomeMessage = document.getElementById('outcomeMessage');
-socket.on('message', (data) => {
-    console.log(data);
-    outcomeMessage.innerHTML = `<p class="message">${data}</p>`
-    console.log(data);
-});
+receiveMessage();
