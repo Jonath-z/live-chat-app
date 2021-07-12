@@ -13,6 +13,7 @@ const { Console } = require('console');
 const fs = require('file-system');
 const { storage } = require('firebase-admin');
 const favicon = require('serve-favicon');
+const moment = require('moment');
 
 
 
@@ -115,10 +116,11 @@ app.post('/login', (req, res) => {
         }
     }
     getUser();
-    // res.render('chat');
+    
 });
 
-// get all users
+// *****************************************/get all users/**********************************************************
+
 app.get('/all/users', (req, res) => {
     db.collection('user')
         .get()
@@ -152,20 +154,64 @@ app.get('/live/chat', (req, res) => {
 });
 
 app.post('/live', (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     res.render('userChat', {
+        userAccountProfile: req.body.userAccountProfile,
+        userAccountName:req.body.userAccountName,
         url: req.body.url,
-        name: req.body.name
+        receiver: req.body.name
     });
 });
-// socket io server side
+
+// ************************* from fetch (socket.js) ****************************************************
+app.post('/update/socket', (req, res) => {
+    // console.log(req.body);
+    const userDoc = db.collection('user');
+
+    async function updateID() {
+        const snapshot = await userDoc.where("defaultProfile", "==", req.body.profile).where("data.name", "==", req.body.name).get();
+        if (snapshot.empty) {
+            console.log("no data");
+        } else {
+            snapshot.forEach(doc => {
+                userDoc.doc(doc.id).update({ socket: `${req.body.id}` });
+                    
+            });
+            res.send(req.body);
+        }
+    }
+    updateID();
+
+});
+
 io.on('connection', (socket) => {
-    console.log(socket.id);
-    // listen the message sent
-    socket.on('sendMessage', (msg,receiver) => {
-        // emit the message sent
-        socket.to(`${receiver}`).emit('message', msg);
-        console.log(msg,receiver);
+    console.log('users ID ', socket.id);
+    socket.emit('connection');
+    socket.on('room', (data) => {
+            const userDoc = db.collection('user');
+            async function getReceiverID() {
+                const snapshot = await userDoc.where("defaultProfile", "==", data.receiver).where("data.name", "==", data.room).get();
+                if (snapshot.empty) {
+                    console.log('no data');
+                }
+                else {
+                    snapshot.forEach(doc => {
+                        socket.to(doc.data().socket).emit('message', {
+                            message: `${data.message}`,
+                            fromName: `${data.sender}`,
+                            fromProfile: `${data.senderProfile}`,
+                            to: `${data.room}`,
+                            date: `${moment().format('LT')}`
+                        });
+                        socket.broadcast.emit('desplay-message', {
+                            fromName: `${data.sender}`,
+                            to: `${data.room}`,
+                        });
+                        // console.log(doc.data().socket);
+                    });
+                }
+            }
+            getReceiverID()   
     });
 });
 

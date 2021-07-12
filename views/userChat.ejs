@@ -5,16 +5,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/static/chat.css">
-  <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
   <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <title>Chat</title>
 </head>
 <body>
+  <%- `<header><img src="${userAccountProfile}" alt="profile" class="userChatProfile userSenderProfile"><p class="userNameSender">${userAccountName}</p></header>` %> 
   <section class="userInformation">
-      <%- `<img src="${url}" alt="profile" class="userChatProfile">` %>
-      <%- `<p class="userName">${name}</p>` %>
+    <%- `<div class="receiver"><img src="${url}" alt="profile" class="userChatProfile userReceiverProfile"><p class="userName">${receiver}</p></div>` %>
   </section>
 <section class="chatSection">
 <div class="incomeMessage"></div>
@@ -27,6 +26,7 @@
 <input type="text" name="message" placeholder="message here" id="messageInput"><button type="submit" class="send">send</button>
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 <script src="/statics/socket.js"></script>
-<script src="/statics/chat.js"></script>
 </body>

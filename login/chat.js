@@ -1,4 +1,3 @@
-
 fetch('../all/users')
     .then(res => {
         return res.json();
@@ -48,13 +47,19 @@ fetch('../all/users')
             }
         });
 
+        const navbardiv = document.querySelector('.chatProfile');
+        const userAccountProfile = navbardiv.src;
+        const userAccountName = navbardiv.nextSibling.firstChild.data;
+
         const userChatEvent = document.querySelectorAll('.userChatDiv');
         userChatEvent.forEach(event => {
             event.addEventListener('click', () => {
-                console.log(event);
+                // console.log(event);
+
                 const user = event.textContent;
                 const userProfile = event.firstElementChild;
                 const url = userProfile.getAttribute('src');
+
                 fetch('../live', {
                     method: "POST",
                     headers: {
@@ -62,6 +67,8 @@ fetch('../all/users')
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
+                        userAccountProfile: userAccountProfile,
+                        userAccountName:userAccountName,
                         url: url,
                         name: user
                     })
@@ -69,15 +76,13 @@ fetch('../all/users')
                     return res.text();
                 }).then(data => {
                     // console.log(data);
-                    window.open('../live/chat')
-                        .document.write(`${data}`);
+                    window.open('../live/chat').document.write(`${data}`);
                 });
             });
         });
         
     });
 
-// const userSection = document.querySelector('.userInformation');
-// console.log(userSection);
+
 
 
