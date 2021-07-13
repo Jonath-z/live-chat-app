@@ -14,23 +14,27 @@ const fs = require('file-system');
 const { storage } = require('firebase-admin');
 const favicon = require('serve-favicon');
 const moment = require('moment');
-
+const mongoose = require('mongoose');
 
 
 // middleware
 app.use(favicon(path.join(__dirname, './public', 'favicon.ico')));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/statics', express.static(path.join(__dirname, './login')));
+app.use('/statics', express.static(path.join(__dirname, './js')));
 app.use('/static', express.static(path.join(__dirname, './css')));
 app.set('view engine', 'ejs');
-  
+
+// ******************************** firestore initialization *******************************************//
 firestore.initializeApp({
     credential: firestore.credential.cert(serviceAccount)
 });
 const db = firestore.firestore();
 const storageFiebase = firestore.storage();
 
+//************************** mongoAtlas connection ************************************************//
+mongoose.connect(`${process.env.MONGO_DATABASE}`, {useNewUrlParser: true, useUnifiedTopology: true});
+const mongodb = mongoose.connection;
 
 
 app.get('/', (req, res) => {
@@ -183,7 +187,28 @@ app.post('/update/socket', (req, res) => {
     updateID();
 
 });
+// ************************** get user's message sent (from the client) && store ****************//
+app.post('/messages/sent', (req, res) => {
+    mongodb.collection("messages").insertOne(req.body);
+})
 
+
+// ********************************** get users discussion ***************************************//
+app.post('/user/message', (req, res) => {
+    mongodb.collection("messages").find({
+        "to": `${req.body.usersSender}`,
+        "fromName": `${req.body.userReceiver}`
+    }).toArray((err, data) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(data);
+        }
+    });
+    // console.log(req.body);
+});
+
+// ********************************** socket.io **************************************************//
 io.on('connection', (socket) => {
     console.log('users ID ', socket.id);
     socket.emit('connection');
@@ -203,6 +228,15 @@ io.on('connection', (socket) => {
                             to: `${data.room}`,
                             date: `${moment().format('LT')}`
                         });
+
+                        mongodb.collection("messages").insertOne({
+                            message: `${data.message}`,
+                            fromName: `${data.sender}`,
+                            fromProfile: `${data.senderProfile}`,
+                            to: `${data.room}`,
+                            date: `${moment().format('LT')}`
+                        });
+
                         socket.broadcast.emit('desplay-message', {
                             fromName: `${data.sender}`,
                             to: `${data.room}`,
