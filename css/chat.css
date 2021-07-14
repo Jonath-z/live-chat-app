@@ -4,3 +4,17 @@
 .userChatProfile{
     width: 30px;
 }
+.icons {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 5px;
+}
+.downbar{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr ;
+    justify-content: center;
+}
+

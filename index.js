@@ -100,6 +100,7 @@ app.post('/signup/user', (req, res) => {
     // console.log(req.body);
 });
 
+
 app.post('/login', (req, res) => {
     const userDoc = db.collection('user');
     // console.log(req.body);
@@ -110,8 +111,6 @@ app.post('/login', (req, res) => {
             res.redirect('/');
         } else {
             snapshot.forEach(doc => {
-                // userDoc.doc(doc.id).set({ password: `${req.body.password}` },
-                //     { merge: true });
                 res.render('chat', {
                     data: doc.data()
                 });
@@ -192,17 +191,18 @@ app.post('/messages/sent', (req, res) => {
     mongodb.collection("messages").insertOne(req.body);
 })
 
-
 // ********************************** get users discussion ***************************************//
-app.post('/user/message', (req, res) => {
+app.get('/user/message', (req, res) => {
     mongodb.collection("messages").find({
-        "to": `${req.body.usersSender}`,
-        "fromName": `${req.body.userReceiver}`
+        // "to": `${req.body.usersSender}`,
+        // "fromName": `${req.body.userReceiver}`
     }).toArray((err, data) => {
         if (err) {
             console.log(err)
         } else {
+            // console.log(data);
             res.send(data);
+
         }
     });
     // console.log(req.body);
@@ -213,39 +213,36 @@ io.on('connection', (socket) => {
     console.log('users ID ', socket.id);
     socket.emit('connection');
     socket.on('room', (data) => {
-            const userDoc = db.collection('user');
-            async function getReceiverID() {
-                const snapshot = await userDoc.where("defaultProfile", "==", data.receiver).where("data.name", "==", data.room).get();
-                if (snapshot.empty) {
-                    console.log('no data');
-                }
-                else {
-                    snapshot.forEach(doc => {
-                        socket.to(doc.data().socket).emit('message', {
-                            message: `${data.message}`,
-                            fromName: `${data.sender}`,
-                            fromProfile: `${data.senderProfile}`,
-                            to: `${data.room}`,
-                            date: `${moment().format('LT')}`
-                        });
-
-                        mongodb.collection("messages").insertOne({
-                            message: `${data.message}`,
-                            fromName: `${data.sender}`,
-                            fromProfile: `${data.senderProfile}`,
-                            to: `${data.room}`,
-                            date: `${moment().format('LT')}`
-                        });
-
-                        socket.broadcast.emit('desplay-message', {
-                            fromName: `${data.sender}`,
-                            to: `${data.room}`,
-                        });
-                        // console.log(doc.data().socket);
-                    });
-                }
+        const userDoc = db.collection('user');
+        async function getReceiverID() {
+            const snapshot = await userDoc.where("defaultProfile", "==", data.receiver).where("data.name", "==", data.room).get();
+            if (snapshot.empty) {
+                console.log('no data');
             }
-            getReceiverID()   
+            else {
+                snapshot.forEach(doc => {
+        // *******************send a private message *********************** //
+                    socket.to(doc.data().socket).emit('message', {
+                        message: `${data.message}`,
+                        fromName: `${data.sender}`,
+                        fromProfile: `${data.senderProfile}`,
+                        to: `${data.room}`,
+                        date: `${moment().format('LT')}`
+                    });
+
+       // ******************* messages's storage ************************ //
+                    mongodb.collection("messages").insertOne({
+                        message: `${data.message}`,
+                        fromName: `${data.sender}`,
+                        fromProfile: `${data.senderProfile}`,
+                        to: `${data.room}`,
+                        time: `${moment().format('LT')}`
+                    });
+                    // console.log(doc.data().socket);
+                });
+            };
+        };
+        getReceiverID();
     });
 });
 

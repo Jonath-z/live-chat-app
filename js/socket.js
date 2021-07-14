@@ -22,37 +22,6 @@ const userSenderProfile = document.querySelector('.userSenderProfile');
 const userSenderProfileUrl = userSenderProfile.src;
 // console.log(userSenderProfileUrl);
 
-// ****************************************** get user discussion **************************************** //
-const ChatContainer = document.querySelector('.chatSection');
-fetch('../user/message', {
-    method: "POST",
-    headers: {
-        "accept": "*/*",
-        "content-type": "application/json"
-    },
-    body: JSON.stringify({
-        userReceiver: `${userReceiver}`,
-        userReceiverProfile: `${userReceiverProfileUrl}`,
-        userSenderProfile: `${userSenderProfileUrl}`,
-        usersSender: `${usersSender}`
-    })
-}).then(res => {
-    return res.json();
-}).then(data => {
-    data.forEach(message => {
-
-        const messageDiv = document.createElement('div');
-        messageDiv.classList = "incomeChat";
-        const messagePara = document.createElement('p');
-        messagePara.classList = "incomeChatPara";
-        messagePara.innerHTML = `${message.message}`;
-
-        messageDiv.appendChild(messagePara);
-        ChatContainer.appendChild(messageDiv);
-    });
-    console.log(data);
-});
-
 // ******************************************* update user sockett ID **************************************//
 const socket = io('http://localhost:8000');
 socket.on('connection', () => {
@@ -73,10 +42,48 @@ socket.on('connection', () => {
     // console.log(socket.id);
 });
 
+// ****************************************** get user discussion **************************************** //
+const ChatContainer = document.querySelector('.chatSection');
+fetch('../user/message')
+    .then(res => {
+        return res.json();
+    })
+    .then(data => {
+        data.forEach(message => {
+            console.log(message);
+
+            if (`${message.fromName}` === `${userReceiver}` && `${message.to}` === `${usersSender}`) {
+                const messageDiv = document.createElement('div');
+                const messagePara = document.createElement('p');
+                messageDiv.classList = "incomeChat";
+                messagePara.classList = "incomeChatPara";
+                messagePara.innerHTML = `${message.message}`;
+                messageDiv.style.background = "grey";
+                messageDiv.style.width = "50%";
+                messageDiv.appendChild(messagePara);
+                ChatContainer.append(messageDiv);
+            };
+
+            if (`${message.fromName}` === `${usersSender}` && `${message.to}` === `${userReceiver}`) {
+                const messageDiv2 = document.createElement('div');
+                const messagePara2 = document.createElement('p');
+                messageDiv2.classList = "outcomeChat2";
+                messagePara2.classList = "outcomeChatPara";
+                messagePara2.innerHTML = `${message.message}`;
+                messageDiv2.style.background = "yellow";
+                messageDiv2.style.width = "50%";
+                messageDiv2.style.marginLeft = "50%";
+                messageDiv2.appendChild(messagePara2);
+                ChatContainer.append(messageDiv2);
+            }
+        })
+    });
+    
+
+
 // ************************************ emit message ***************************************************//
 const sendButton = document.querySelector('.send');
 const messageInput = document.getElementById('messageInput');
-
 
 sendButton.addEventListener('click', () => {
     const message = messageInput.value;
@@ -89,44 +96,33 @@ sendButton.addEventListener('click', () => {
         sender: `${usersSender}`,
         senderProfile: `${userSenderProfileUrl}`
     });
-
-    const messageDiv2 = document.createElement('div');
-    messageDiv2.classList = "outcomeChat";
-    const messagePara2 = document.createElement('p');
-    messagePara2.classList = "outcomeChatPara";
-    messagePara2.innerHTML = `${message}`;
-    messageDiv2.appendChild(messagePara2);
-    ChatContainer.appendChild(messageDiv2);
     
-    // ******************************** fetch message sent to the server ************************************//
-    fetch('../messages/sent', {
-        method: "POST",
-        headers: {
-            'accept': '*/*',
-            'content-type':'application/json'
-        },
-        body: JSON.stringify({
-            messageSentBy: `${usersSender}`,
-            message: `${message}`,
-            messageSentTo: `${userReceiver}`
-        })
-    }).then(res => {
-        res.json();
-    }).then(data => {
-        console.log(data);
-    })
+    const messageDiv3 = document.createElement('div');
+    messageDiv3.classList = "outcomeChat3";
+    const messagePara3 = document.createElement('p');
+    messagePara3.classList = "outcomeChatPara";
+    messagePara3.innerHTML = `${message}`;
+    messageDiv3.style.background = "yellow";
+    messageDiv3.style.width = "50%";
+    messageDiv3.style.marginLeft = "50%";
+    messageDiv3.appendChild(messagePara3);
+    ChatContainer.appendChild(messageDiv3);
 
     messageInput.value = '';
 });
+
 // *************************************** listen to the message ************************************ //
 socket.on('message', (data) => {
-    console.log(data);
+    // console.log(data.message);
     const para = document.createElement('p');
     if (`${data.fromName}` === `${userReceiver}`) {
+        const messageDiv2 = document.createElement('div');
         para.innerHTML = `${data.message}`;
-        ChatContainer.appendChild(para);
+        para.classList = "outcomeChatPara";
+        messageDiv2.appendChild(para);
+        messageDiv2.style.background = "grey";
+        messageDiv2.style.width = "50%";
+        messageDiv2.appendChild(para);
+        ChatContainer.appendChild(messageDiv2);
     }
 });
-
-
-

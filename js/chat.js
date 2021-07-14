@@ -77,11 +77,20 @@ fetch('../all/users')
                 }).then(data => {
                     // console.log(data);
                     window.open('../live/chat').document.write(`${data}`);
+
                 });
             });
         });
         
     });
+
+const peopleIcon = document.querySelector('.fa-users');
+peopleIcon.style.color = "red";
+const chatIcon = document.querySelector('.fa-comment');
+// chatIcon.addEventListener('click', () => {
+    
+// })
+    
 
 
 
