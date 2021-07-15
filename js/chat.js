@@ -28,11 +28,14 @@ fetch('../all/users')
                             img.alt = 'profile';
                             img.classList = 'userChatProfile';
                             const para = document.createElement('p');
+                            const followButton = document.createElement('button');
+                            followButton.innerHTML = "Follow";
+                            followButton.classList = "followButton";
                             para.classList = 'username';
-                            para.innerText = user.data.name;
+                            para.innerHTML = user.data.name;
                             const hr = document.createElement('hr');
                 
-                            div.append(img, para);
+                            div.append(img, para, followButton);
                             chatUserDiv.append(div, hr);
                             
                             // chatUserDiv.appendChild(userChatProfile);
@@ -51,7 +54,7 @@ fetch('../all/users')
         const userAccountProfile = navbardiv.src;
         const userAccountName = navbardiv.nextSibling.firstChild.data;
 
-        const userChatEvent = document.querySelectorAll('.userChatDiv');
+        const userChatEvent = document.querySelectorAll('.username');
         userChatEvent.forEach(event => {
             event.addEventListener('click', () => {
                 // console.log(event);
@@ -68,7 +71,7 @@ fetch('../all/users')
                     },
                     body: JSON.stringify({
                         userAccountProfile: userAccountProfile,
-                        userAccountName:userAccountName,
+                        userAccountName: userAccountName,
                         url: url,
                         name: user
                     })
@@ -81,15 +84,93 @@ fetch('../all/users')
                 });
             });
         });
-        
-    });
+        const peopleIcon = document.querySelector('.fa-users');
+        peopleIcon.style.color = "red";
+        // const chatIcon = document.querySelector('.fa-comment');
+        const followButtons = document.querySelectorAll('.followButton');
+        // console.log(followButtons);
+        followButtons.forEach(button => {
 
-const peopleIcon = document.querySelector('.fa-users');
-peopleIcon.style.color = "red";
-const chatIcon = document.querySelector('.fa-comment');
-// chatIcon.addEventListener('click', () => {
+            
+            button.addEventListener('click', () => {
+                if (`${button.innerHTML}` === "Follow") {
+                    const navbarImage = document.querySelector('.chatProfile');
+                    const userProfile = navbarImage.src;
+                    const userName = navbarImage.nextSibling.firstChild.data;
+                    const div = button.parentNode.childNodes;
+                    const followedProfile = div[0].src;
+                    const followedName = div[1].textContent;
+                    // console.log(followedName,followedProfile);
+                    button.innerHTML = "Unfollow";
     
-// })
+                    fetch('../set/followers', {
+                        method: "POST",
+                        headers: {
+                            'accept': '*/*',
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            followerProfile: `${userProfile}`,
+                            followerName: `${userName}`,
+                            followedProfile: `${followedProfile}`,
+                            followedName: `${followedName}`
+                        })
+                    });
+                }
+                else {
+                    const navbarImage = document.querySelector('.chatProfile');
+                    const userProfile = navbarImage.src;
+                    const userName = navbarImage.nextSibling.firstChild.data;
+                    const div = button.parentNode.childNodes;
+                    const followedProfile = div[0].src;
+                    const followedName = div[1].textContent;
+                    // console.log(followedName,followedProfile);
+                    button.innerHTML = "Follow";
+    
+                    fetch('../unfollow', {
+                        method: "POST",
+                        headers: {
+                            'accept': '*/*',
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            followerProfile: `${userProfile}`,
+                            followerName: `${userName}`,
+                            followedProfile: `${followedProfile}`,
+                            followedName: `${followedName}`
+                        })
+                    });
+                }
+            });
+        
+        });
+            
+        fetch('../all/user/followers')
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                // console.log(data);
+                data.forEach(user => {
+                    const navbarImage = document.querySelector('.chatProfile');
+                    const userProfile = navbarImage.src;
+                    const userName = navbarImage.nextSibling.firstChild.data;
+                    const allDiv = document.querySelectorAll('.userChatDiv');
+                    allDiv.forEach(div => {
+                        const divProfile = div.childNodes[0].src;
+                        const divName = div.childNodes[1].textContent;
+                        if (`${userProfile}` === `${user.followerProfile}` && `${userName}` === `${user.followerName}`) {
+                            if (`${divName}` === `${user.followedName}` && `${divProfile}` === `${user.followedProfile}`) {
+                                div.childNodes[2].innerHTML = "Unfollow";
+                            }
+                        }
+                    });
+                });
+            });
+    });
+                
+              
+
     
 
 
