@@ -20,7 +20,7 @@ const userReceiverProfileUrl = userReceiverProfile.src;
 const usersSender = document.querySelector('.userNameSender').textContent;
 const userSenderProfile = document.querySelector('.userSenderProfile');
 const userSenderProfileUrl = userSenderProfile.src;
-// console.log(userSenderProfileUrl);
+// console.log(document.querySelector('.userName'));
 
 // ******************************************* update user sockett ID **************************************//
 const socket = io('http://localhost:8000');
@@ -29,18 +29,39 @@ socket.on('connection', () => {
         method: "POST",
         headers: {
             'accept': '*/*',
-            'content-type':'application/json'
+            'content-type': 'application/json'
         },
         body: JSON.stringify({
-            profile:userSenderProfileUrl,
+            profile: userSenderProfileUrl,
             name: usersSender,
-            id:socket.id 
+            id: socket.id
         })
     }).then(res => {
         return res.json();
-    })
+    });
+
     // console.log(socket.id);
 });
+
+fetch('../all/user/followers')
+    .then(res => {
+        return res.json()
+    })
+    .then(data => {
+        data.forEach(user => {
+            if (user.followerName !== usersSender || user.followedName !== userReceiver ) {
+                // if (`${user.followedProfile}` !== `${userReceiverProfileUrl}` && `${user.followedName}` !== `${userReceiver}`) {
+                    const messageInput = document.getElementById('messageInput');
+                    console.log(messageInput);
+                    messageInput.setAttribute('readonly', 'true');
+                    const sendButton = document.querySelector('.send');
+                    console.log(sendButton);
+                    sendButton.remove();
+                // }
+            }
+        })
+        console.log(data);
+    });
 
 // ****************************************** get user discussion **************************************** //
 const ChatContainer = document.querySelector('.chatSection');
@@ -112,6 +133,7 @@ sendButton.addEventListener('click', () => {
 });
 
 // *************************************** listen to the message ************************************ //
+
 socket.on('message', (data) => {
     // console.log(data.message);
     const para = document.createElement('p');

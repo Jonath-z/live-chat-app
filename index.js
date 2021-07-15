@@ -165,7 +165,7 @@ app.post('/live', (req, res) => {
     });
 });
 
-// ************************* from fetch (socket.js) ****************************************************
+// ********************* from fetch (socket.js) updating user's socketID*******************//
 app.post('/update/socket', (req, res) => {
     // console.log(req.body);
     const userDoc = db.collection('user');
@@ -230,6 +230,25 @@ app.get('/user/message', (req, res) => {
         }
     });
     // console.log(req.body);
+});
+
+// *********************** get user's profile from firestore ********************************//
+app.post('/user/profile', (req, res) => {
+    const userDoc = db.collection('user');
+
+    async function userProfile() {
+        const snapshot = await userDoc.where("defaultProfile", "==", req.body.userProfile).where("data.name", "==", req.body.userName).get();
+        if (snapshot.empty) {
+            console.log("no data");
+        } else {
+            snapshot.forEach(doc => {
+                console.log(doc.data());
+                res.send(doc.data());
+                    
+            });
+        }
+    }
+    userProfile();
 });
 
 // ********************************** socket.io **************************************************//

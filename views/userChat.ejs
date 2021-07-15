@@ -11,7 +11,7 @@
   <title>Chat</title>
 </head>
 <body>
-  <%- `<header><img src="${userAccountProfile}" alt="profile" class="userChatProfile userSenderProfile"><p class="userNameSender">${userAccountName}</p></header>` %> 
+  <%- `<header><div class="arrowdiv"><i class="fa fa-arrow-left"></i></div><img src="${userAccountProfile}" alt="profile" class="userChatProfile userSenderProfile"><p class="userNameSender">${userAccountName}</p></header>` %> 
   <section class="userInformation">
     <%- `<div class="receiver"><img src="${url}" alt="profile" class="userChatProfile userReceiverProfile"><p class="userName">${receiver}</p></div>` %>
   </section>
@@ -21,7 +21,7 @@
 
 <footer>
 <div class="messageInput"> 
-<input type="text" name="message" placeholder="message here" id="messageInput"><button type="submit" class="send">send</button>
+<input type="text" name="message" placeholder="message here" id="messageInput"><button type="submit" class="send"><i class="fa fa-paper-plane" style="font-size:24px"></i></button>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>

@@ -1,3 +1,4 @@
+//*********************** get all user from the server *************************************/
 fetch('../all/users')
     .then(res => {
         return res.json();
@@ -34,9 +35,12 @@ fetch('../all/users')
                             para.classList = 'username';
                             para.innerHTML = user.data.name;
                             const hr = document.createElement('hr');
+                            // const divButton = document.createElement('div');
+                            // divButton.classList = "divButton";
+                            // divButton.append(followButton);
                 
-                            div.append(img, para, followButton);
-                            chatUserDiv.append(div, hr);
+                            div.append(img, para, followButton, hr);
+                            chatUserDiv.append(div);
                             
                             // chatUserDiv.appendChild(userChatProfile);
                             // console.log(userChat);
@@ -49,17 +53,18 @@ fetch('../all/users')
                 return true;
             }
         });
-
+        //************************** get all users and desplay in people page *********************************/
         const navbardiv = document.querySelector('.chatProfile');
         const userAccountProfile = navbardiv.src;
         const userAccountName = navbardiv.nextSibling.firstChild.data;
 
-        const userChatEvent = document.querySelectorAll('.username');
+        const userChatEvent = document.querySelectorAll('.userChatDiv');
         userChatEvent.forEach(event => {
             event.addEventListener('click', () => {
                 // console.log(event);
 
-                const user = event.textContent;
+                const user = event.childNodes[1].innerHTML;
+                console.log(user);
                 const userProfile = event.firstElementChild;
                 const url = userProfile.getAttribute('src');
 
@@ -80,19 +85,18 @@ fetch('../all/users')
                 }).then(data => {
                     // console.log(data);
                     window.open('../live/chat').document.write(`${data}`);
-
+                    
                 });
             });
         });
-        const peopleIcon = document.querySelector('.fa-users');
-        peopleIcon.style.color = "red";
-        // const chatIcon = document.querySelector('.fa-comment');
+
+        // ********************** follow button event set *******************************************************//
         const followButtons = document.querySelectorAll('.followButton');
         // console.log(followButtons);
         followButtons.forEach(button => {
 
-            
             button.addEventListener('click', () => {
+                // **************** check the state of user (follwed or not yet)**************************//      
                 if (`${button.innerHTML}` === "Follow") {
                     const navbarImage = document.querySelector('.chatProfile');
                     const userProfile = navbarImage.src;
@@ -100,9 +104,9 @@ fetch('../all/users')
                     const div = button.parentNode.childNodes;
                     const followedProfile = div[0].src;
                     const followedName = div[1].textContent;
-                    // console.log(followedName,followedProfile);
+                    console.log(div);
                     button.innerHTML = "Unfollow";
-    
+                    //**************** if user is follewed so the event is unfollow ****************** //
                     fetch('../set/followers', {
                         method: "POST",
                         headers: {
@@ -118,6 +122,7 @@ fetch('../all/users')
                     });
                 }
                 else {
+                    //****************** if not so the event is follow ***********************//       
                     const navbarImage = document.querySelector('.chatProfile');
                     const userProfile = navbarImage.src;
                     const userName = navbarImage.nextSibling.firstChild.data;
@@ -143,8 +148,9 @@ fetch('../all/users')
                 }
             });
         
-        });
-            
+        })
+        
+        //***************************** set and deplay user's followers ***************************************//
         fetch('../all/user/followers')
             .then(res => {
                 return res.json();
@@ -167,6 +173,126 @@ fetch('../all/users')
                     });
                 });
             });
+        // *********************** get people page (mainpage) **********************************************//       
+        const peopleIcon = document.querySelector('.fa-users');
+        peopleIcon.style.color = "red";
+        peopleIcon.addEventListener('click', () => {
+            const chatIcon = document.querySelector('.fa-comment');
+            chatIcon.style.color = "black";
+            peopleIcon.style.color = "red";
+            profileIcon.style.color = "black";
+            window.document.location.reload();
+        });
+        //****************************get chat page ************************************************************ // 
+        const chatIcon = document.querySelector('.fa-comment');
+        chatIcon.addEventListener('click', () => {
+            const allButtons = document.querySelectorAll('.followButton');
+            allButtons.forEach(button => {
+                if (`${button.innerHTML}` === "Follow") {
+                    const div = button.parentNode;
+                    div.remove();
+                }
+                button.remove();
+            });
+            const peopleIcon = document.querySelector('.fa-users');
+            peopleIcon.style.color = "black";
+            profileIcon.style.color = "black";
+            chatIcon.style.color = "red";
+        });
+        // ********************************** set profile page element ******************************************//
+        const profileIcon = document.querySelector('.fa-user');
+        profileIcon.addEventListener('click', () => {
+            profileIcon.style.color = "red";
+            chatIcon.style.color = "black";
+            peopleIcon.style.color = "black";
+            const alluserDiv = document.querySelectorAll('.userChatDiv');
+            alluserDiv.forEach(div => {
+                div.remove();
+            });
+            const reseachBar = document.getElementById('searchBar');
+            reseachBar.remove();
+            const navbardiv = document.querySelector('.navBar');
+            navbardiv.remove();
+            console.log(navbardiv.childNodes[1]);
+            const userProfile = navbardiv.childNodes[1].firstChild.src;
+            const userName = navbardiv.childNodes[1].lastChild.innerHTML;
+            // console.log(userProfile, userName);
+
+            //************** get user's profile ************************************/
+            fetch('../user/profile', {
+                method: "POST",
+                headers: {
+                    'accept': '*/*',
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userProfile: `${userProfile}`,
+                    userName: `${userName}`
+                })
+            }).then(res => {
+                return res.json();
+            }).then(data => {
+                // ************************ create node for each user's profile element *******************************//
+                //************************* set each user's profile the page *************************************** */       
+                const section = document.createElement('section');
+                section.classList = "profileSection";
+                const divProfile = document.createElement('div');
+                divProfile.classList = "profileDiv";
+                const img = document.createElement('img');
+                img.classList = "profile";
+                img.alt = "profile";
+                img.src = `${data.defaultProfile}`;
+                img.style.width = "40px";
+                divProfile.append(img);
+                section.append(divProfile);
+
+                const detailsSection = document.createElement('section');
+                detailsSection.classList = "detailsSection";
+
+                const div1 = document.createElement('div');
+                div1.classList = "userNameDiv";
+
+                const label = document.createElement('label');
+                label.classList = "userNamePara";
+                label.setAttribute('for', 'userName');
+                label.innerHTML = "Name";
+
+                const inputName = document.createElement('input');
+                inputName.name = "userName";
+                inputName.classList = "inputName";
+                inputName.setAttribute('readonly', 'true');
+                inputName.value = `${data.data.name}`;
+
+                const i = document.createElement('i');
+                i.classList = "fa fa-pencil"
+                
+                div1.append(label, inputName, i);
+            
+                const div2 = document.createElement('div');
+                div2.classList = "passworDiv";
+                const inputPassword = document.createElement('input');
+                inputPassword.classList = "inputPassword";
+                inputPassword.name = "password";
+
+                const labelPassword = document.createElement('label');
+                labelPassword.setAttribute('for', 'password');
+                labelPassword.classList = "labelPassword";
+                label.innerHTML = "Password"
+
+                inputPassword.type = "password";
+                inputPassword.value = `${data.password}`;
+                inputPassword.setAttribute('readonly', 'true');
+                div2.append(labelPassword, inputPassword, i);
+
+                detailsSection.append(div1, div2);
+
+                const body = document.getElementsByTagName('body');
+                body[0].append(section, detailsSection);
+
+                // console.log(data);
+            })
+   
+        });
     });
                 
               
