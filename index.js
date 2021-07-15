@@ -30,7 +30,6 @@ firestore.initializeApp({
     credential: firestore.credential.cert(serviceAccount)
 });
 const db = firestore.firestore();
-const storageFiebase = firestore.storage();
 
 //************************** mongoAtlas connection ************************************************//
 mongoose.connect(`${process.env.MONGO_DATABASE}`, {useNewUrlParser: true, useUnifiedTopology: true});
@@ -191,12 +190,37 @@ app.post('/messages/sent', (req, res) => {
     mongodb.collection("messages").insertOne(req.body);
 })
 
+// ************************ store user's followers in mongoAtlas **************************** //
+app.post('/set/followers', (req, res) => {
+    // console.log(req.body);
+    mongodb.collection("users-followers").insertOne(req.body);
+});
+
+// ****************************** get all user's followers from mongoAtlas *************************//
+app.get('/all/user/followers', (req, res) => {
+    mongodb.collection("users-followers").find({}).toArray((err, data) => {
+        if (err) {
+            console.log(err);
+        }
+        res.send(data);
+    });
+});
+// ***************************** unfollow user setting ******************************************* //
+app.post('/unfollow', (req, res) => {
+    mongodb.collection("users-followers").find({
+        followerProfile: `${req.body.followerProfile}`,
+        followerName: `${req.body.followerName}`,
+        followedProfile: `${req.body.followedProfile}`,
+        followedName: `${req.body.followedName}`
+    }).toArray((err, data) => {
+        mongodb.collection("users-followers").deleteOne(data[0]);
+        // console.log(data);
+    })
+});
+
 // ********************************** get users discussion ***************************************//
 app.get('/user/message', (req, res) => {
-    mongodb.collection("messages").find({
-        // "to": `${req.body.usersSender}`,
-        // "fromName": `${req.body.userReceiver}`
-    }).toArray((err, data) => {
+    mongodb.collection("messages").find({}).toArray((err, data) => {
         if (err) {
             console.log(err)
         } else {
