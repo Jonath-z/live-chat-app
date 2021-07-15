@@ -251,6 +251,27 @@ app.post('/user/profile', (req, res) => {
     userProfile();
 });
 
+// ********************************* get people via reaserch ************************************//
+app.post('/user/search', (req, res) => {
+    const userDoc = db.collection('user');
+
+    async function searchUser() {
+        const snapshot = await userDoc.where("data.name", "==", req.body.name).get();
+        if (snapshot.empty) {
+            res.send({ data:"empty"});
+        } else {
+            snapshot.forEach(doc => {
+                // console.log(doc.data());
+                // res.send(doc.data());
+                const data = [];
+                data.push(doc.data());
+                res.send(data);
+            });
+        }
+    }
+    searchUser();
+});
+
 // ********************************** socket.io **************************************************//
 io.on('connection', (socket) => {
     console.log('users ID ', socket.id);

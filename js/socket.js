@@ -49,14 +49,21 @@ fetch('../all/user/followers')
     })
     .then(data => {
         data.forEach(user => {
-            if (user.followerName !== usersSender || user.followedName !== userReceiver ) {
+            if (user.followerName !== usersSender || user.followedName !== userReceiver) {
                 // if (`${user.followedProfile}` !== `${userReceiverProfileUrl}` && `${user.followedName}` !== `${userReceiver}`) {
-                    const messageInput = document.getElementById('messageInput');
-                    console.log(messageInput);
-                    messageInput.setAttribute('readonly', 'true');
-                    const sendButton = document.querySelector('.send');
-                    console.log(sendButton);
-                    sendButton.remove();
+                const messageInput = document.getElementById('messageInput');
+                console.log(messageInput);
+                messageInput.setAttribute('readonly', 'true');
+                const sendButton = document.querySelector('.send');
+                console.log(sendButton);
+                sendButton.remove();
+
+                const signalPara = document.createElement('p');
+                signalPara.classList = "signalPara";
+                signalPara.innerHTML = `please follow ${usersSender} before this conversation.`;
+                const alertDiv = document.querySelector('.alertSection');
+                alertDiv.append(signalPara);
+                
                 // }
             }
         })

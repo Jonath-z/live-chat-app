@@ -53,6 +53,7 @@ fetch('../all/users')
                 return true;
             }
         });
+
         //************************** get all users and desplay in people page *********************************/
         const navbardiv = document.querySelector('.chatProfile');
         const userAccountProfile = navbardiv.src;
@@ -199,7 +200,7 @@ fetch('../all/users')
             profileIcon.style.color = "black";
             chatIcon.style.color = "red";
         });
-        // ********************************** set profile page element ******************************************//
+        // ********************************** set profile page's element ******************************************//
         const profileIcon = document.querySelector('.fa-user');
         profileIcon.addEventListener('click', () => {
             profileIcon.style.color = "red";
@@ -293,10 +294,194 @@ fetch('../all/users')
             })
    
         });
+//************************************* search bar people **************************************************************************************//
+        const searchBar = document.getElementById('searchBar');
+        searchBar.value = "";
+        searchBar.addEventListener('change', () => {
+            fetch('../user/search', {
+                method: "POST",
+                headers: {
+                    'accept': '*/*',
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: `${searchBar.value}`
+                })
+            }).then(res => {
+                return res.json();
+            }).then(data => {
+                const allDiv = document.querySelectorAll('.userChatDiv');
+                allDiv.forEach(div => {
+                    div.remove();
+                });
+                peopleIcon.style.color = "black";
+                if (data.data === "empty") {
+                    const para = document.createElement('p');
+                    para.classList = "noData";
+                    para.innerHTML = `NO DATA MATCHED ON THIS VALUE {${searchBar.value}} try again or go to people.`;
+                    const body = document.getElementsByTagName('body');
+                    body[0].append(para);
+                }
+        
+                searchBar.value = "";
+                data.forEach(user => {
+                    const chatUserDiv = document.querySelector('.chatUsers');
+                    // const userChat = `<div class="userChatDiv"><img src="${user.defaultProfile}" alt="profile" class="userChatProfile"> ${user.data.name}</div><hr>`;
+                    const div = document.createElement('div');
+                    div.classList = 'userChatDiv';
+                    const img = document.createElement('img');
+                    img.src = user.defaultProfile;
+                    img.alt = 'profile';
+                    img.classList = 'userChatProfile';
+                    const para = document.createElement('p');
+                    const followButton = document.createElement('button');
+
+
+                    fetch('../all/user/followers')
+                        .then(res => {
+                            return res.json();
+                        })
+                        .then(data => {
+                            // console.log(data);
+                            data.forEach(user => {
+                                const navbarImage = document.querySelector('.chatProfile');
+                                const userProfile = navbarImage.src;
+                                const userName = navbarImage.nextSibling.firstChild.data;
+                                const allDiv = document.querySelectorAll('.userChatDiv');
+                                allDiv.forEach(div => {
+                                    const divProfile = div.childNodes[0].src;
+                                    const divName = div.childNodes[1].textContent;
+                                    if (`${userProfile}` === `${user.followerProfile}` && `${userName}` === `${user.followerName}`) {
+                                        if (`${divName}` === `${user.followedName}` && `${divProfile}` === `${user.followedProfile}`) {
+                                            followButton.innerHTML = "Unfollow";
+                                        }
+                                    }
+                                });
+                            });
+                        });
+
+
+                    followButton.innerHTML = "Follow";
+                    followButton.classList = "followButton";
+                    para.classList = 'username';
+                    para.innerHTML = user.data.name;
+                    const hr = document.createElement('hr');
+                    // const divButton = document.createElement('div');
+                    // divButton.classList = "divButton";
+                    // divButton.append(followButton);
+                        
+                    div.append(img, para, followButton, hr);
+                    chatUserDiv.append(div);
+                                    
+                    // chatUserDiv.appendChild(userChatProfile);
+                    // console.log(userChat);
+                    // console.log(chatUserDiv); 
+                    // console.log(userProfile);
+                });
+                //************************** get all users and desplay in people page *********************************/
+                const navbardiv = document.querySelector('.chatProfile');
+                const userAccountProfile = navbardiv.src;
+                const userAccountName = navbardiv.nextSibling.firstChild.data;
+
+                const userChatEvent = document.querySelectorAll('.userChatDiv');
+                userChatEvent.forEach(event => {
+                    event.addEventListener('click', () => {
+                        // console.log(event);
+
+                        const user = event.childNodes[1].innerHTML;
+                        console.log(user);
+                        const userProfile = event.firstElementChild;
+                        const url = userProfile.getAttribute('src');
+
+                        fetch('../live', {
+                            method: "POST",
+                            headers: {
+                                'Accept': '*/*',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                userAccountProfile: userAccountProfile,
+                                userAccountName: userAccountName,
+                                url: url,
+                                name: user
+                            })
+                        }).then(res => {
+                            return res.text();
+                        }).then(data => {
+                            // console.log(data);
+                            window.open('../live/chat').document.write(`${data}`);
+                    
+                        });
+                    });
+                });
+
+                const followButtons = document.querySelectorAll('.followButton');
+                followButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        // **************** check the state of user (follwed or not yet)**************************//     
+                        console.log(button);
+                        if (`${button.innerHTML}` === "Follow") {
+                            const navbarImage = document.querySelector('.chatProfile');
+                            const userProfile = navbarImage.src;
+                            const userName = navbarImage.nextSibling.firstChild.data;
+                            const div = button.parentNode.childNodes;
+                            const followedProfile = div[0].src;
+                            const followedName = div[1].textContent;
+                            console.log(div);
+                            button.innerHTML = "Unfollow";
+                            //**************** if user is follewed so the event is unfollow ****************** //
+                            fetch('../set/followers', {
+                                method: "POST",
+                                headers: {
+                                    'accept': '*/*',
+                                    'content-type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    followerProfile: `${userProfile}`,
+                                    followerName: `${userName}`,
+                                    followedProfile: `${followedProfile}`,
+                                    followedName: `${followedName}`
+                                })
+                            });
+                        }
+                        else {
+                            //****************** if not so the event is follow ***********************//       
+                            const navbarImage = document.querySelector('.chatProfile');
+                            const userProfile = navbarImage.src;
+                            const userName = navbarImage.nextSibling.firstChild.data;
+                            const div = button.parentNode.childNodes;
+                            const followedProfile = div[0].src;
+                            const followedName = div[1].textContent;
+                            // console.log(followedName,followedProfile);
+                            button.innerHTML = "Follow";
+              
+                            fetch('../unfollow', {
+                                method: "POST",
+                                headers: {
+                                    'accept': '*/*',
+                                    'content-type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    followerProfile: `${userProfile}`,
+                                    followerName: `${userName}`,
+                                    followedProfile: `${followedProfile}`,
+                                    followedName: `${followedName}`
+                                })
+                            });
+                        }
+                    });
+                });
+            });
+            // ********************** follow button event set *******************************************************//
+            // const followButtons = document.querySelectorAll('.followButton');
+            // console.log(followButtons);
+    
+          
+        });
+
     });
                 
-              
-
+            
     
 
 
