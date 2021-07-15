@@ -50,7 +50,7 @@ fetch('../user/message')
     })
     .then(data => {
         data.forEach(message => {
-            console.log(message);
+            // console.log(message);
 
             if (`${message.fromName}` === `${userReceiver}` && `${message.to}` === `${usersSender}`) {
                 const messageDiv = document.createElement('div');
