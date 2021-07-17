@@ -43,33 +43,6 @@ socket.on('connection', () => {
     // console.log(socket.id);
 });
 
-fetch('../all/user/followers')
-    .then(res => {
-        return res.json()
-    })
-    .then(data => {
-        data.forEach(user => {
-            if (user.followerName !== usersSender || user.followedName !== userReceiver) {
-                // if (`${user.followedProfile}` !== `${userReceiverProfileUrl}` && `${user.followedName}` !== `${userReceiver}`) {
-                const messageInput = document.getElementById('messageInput');
-                console.log(messageInput);
-                messageInput.setAttribute('readonly', 'true');
-                const sendButton = document.querySelector('.send');
-                console.log(sendButton);
-                sendButton.remove();
-
-                const signalPara = document.createElement('p');
-                signalPara.classList = "signalPara";
-                signalPara.innerHTML = `please follow ${usersSender} before this conversation.`;
-                const alertDiv = document.querySelector('.alertSection');
-                alertDiv.append(signalPara);
-                
-                // }
-            }
-        })
-        console.log(data);
-    });
-
 // ****************************************** get user discussion **************************************** //
 const ChatContainer = document.querySelector('.chatSection');
 fetch('../user/message')
@@ -155,3 +128,31 @@ socket.on('message', (data) => {
         ChatContainer.appendChild(messageDiv2);
     }
 });
+
+ // ************************************* fa fa-arrow-left event ***************************************//
+// const arrowLeft = document.querySelector('.fa-arrow-left');
+// arrowLeft.addEventListener('click', () => {
+//     socket.emit('user-passworod', {
+//         name: `${usersSender}`,
+//         profile: `${userSenderProfileUrl}`
+//     });
+//     socket.on('user-get-profile', data => {
+//         console.log(data);
+//         fetch('../login', {
+//             method: "POST",
+//             headers: {
+//                 'accept': '*/*',
+//                 'content-type': 'application/json'
+//             },
+//             body: JSON.stringify({
+//                 password: `${data.password}`,
+//                 name: `${data.data.name}`
+//             })
+//         }).then(res => {
+//             return res.text()
+//         }).then(data => {
+//             console.log(data);
+//         });
+//     });
+    
+// });

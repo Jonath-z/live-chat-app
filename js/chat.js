@@ -1,3 +1,4 @@
+
 //*********************** get all user from the server *************************************/
 fetch('../all/users')
     .then(res => {
@@ -52,43 +53,6 @@ fetch('../all/users')
                 }
                 return true;
             }
-        });
-
-        //************************** get all users and desplay in people page *********************************/
-        const navbardiv = document.querySelector('.chatProfile');
-        const userAccountProfile = navbardiv.src;
-        const userAccountName = navbardiv.nextSibling.firstChild.data;
-
-        const userChatEvent = document.querySelectorAll('.userChatDiv');
-        userChatEvent.forEach(event => {
-            event.addEventListener('click', () => {
-                // console.log(event);
-
-                const user = event.childNodes[1].innerHTML;
-                console.log(user);
-                const userProfile = event.firstElementChild;
-                const url = userProfile.getAttribute('src');
-
-                fetch('../live', {
-                    method: "POST",
-                    headers: {
-                        'Accept': '*/*',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        userAccountProfile: userAccountProfile,
-                        userAccountName: userAccountName,
-                        url: url,
-                        name: user
-                    })
-                }).then(res => {
-                    return res.text();
-                }).then(data => {
-                    // console.log(data);
-                    window.open('../live/chat').document.write(`${data}`);
-                    
-                });
-            });
         });
 
         // ********************** follow button event set *******************************************************//
@@ -184,17 +148,98 @@ fetch('../all/users')
             profileIcon.style.color = "black";
             window.document.location.reload();
         });
-        //****************************get chat page ************************************************************ // 
+        //**************************************************get chat page ************************************************************ //
         const chatIcon = document.querySelector('.fa-comment');
         chatIcon.addEventListener('click', () => {
-            const allButtons = document.querySelectorAll('.followButton');
-            allButtons.forEach(button => {
-                if (`${button.innerHTML}` === "Follow") {
-                    const div = button.parentNode;
-                    div.remove();
-                }
-                button.remove();
-            });
+            const navbarImage = document.querySelector('.chatProfile');
+            const userProfile = navbarImage.src;
+            const userName = navbarImage.nextSibling.firstChild.data;
+
+            fetch('../all/user/followers')
+                .then(res => {
+                    return res.json();
+                }).then(data => {
+                    // **********************remove all div on the people page ********************************//
+                    const alluserDiv = document.querySelectorAll('.userChatDiv');
+                    const chatUserDiv = document.querySelector('.chatUsers');
+                    alluserDiv.forEach(div => {
+                        div.remove();
+                    });
+                    // *********** remove all password and userName div on profile page ********//
+                    const passwordDiv = document.querySelector('.passworDiv');
+                    const userNameDiv = document.querySelector('.userNameDiv');
+                    if (passwordDiv || userNameDiv) {
+                        passwordDiv.remove();
+                        userNameDiv.remove();
+                        // div.append(img, para, hr);
+                        // chatUserDiv.append(div);
+                    }
+                    
+                    data.forEach(user => {
+                        if (`${user.followerName}` === `${userName}`) {
+                            // if (passwordDiv && userNameDiv) {
+                            //     passwordDiv.remove();
+                            //     userNameDiv.remove();
+                            // }
+                      
+                            const div = document.createElement('div');
+                            div.classList = 'userChatDiv';
+                            const img = document.createElement('img');
+                            img.src = user.followedProfile;
+                            img.alt = 'profile';
+                            img.classList = 'userChatProfile';
+                            const para = document.createElement('p');
+                            para.classList = 'username';
+                            para.innerHTML = user.followedName;
+                            const hr = document.createElement('hr');
+
+                            div.append(img, para, hr);
+                            chatUserDiv.appendChild(div);
+                        
+
+                            // ************************** open the userChat page *********************************//
+                            const navbardiv = document.querySelector('.chatProfile');
+                            const userAccountProfile = navbardiv.src;
+                            const userAccountName = navbardiv.nextSibling.firstChild.data;
+
+                            const userChatEvent = document.querySelectorAll('.userChatDiv');
+                            userChatEvent.forEach(event => {
+                                event.addEventListener('click', () => {
+                                    // console.log(event);
+
+                                    const user = event.childNodes[1].innerHTML;
+                                    console.log(user);
+                                    const userProfile = event.firstElementChild;
+                                    const url = userProfile.getAttribute('src');
+
+                                    fetch('../live', {
+                                        method: "POST",
+                                        headers: {
+                                            'Accept': '*/*',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            userAccountProfile: userAccountProfile,
+                                            userAccountName: userAccountName,
+                                            url: url,
+                                            name: user
+                                        })
+                                    }).then(res => {
+                                        return res.text();
+                                    }).then(data => {
+                                        // console.log(data);
+                                        window.open('../live/chat', '_self').document.write(`${data}`);
+                    
+                                    });
+                                });
+                            });
+                        }
+                    });
+                    
+                    console.log(data);
+                })
+
+            console.log(userProfile, userName);
             const peopleIcon = document.querySelector('.fa-users');
             peopleIcon.style.color = "black";
             profileIcon.style.color = "black";
@@ -211,7 +256,9 @@ fetch('../all/users')
                 div.remove();
             });
             const reseachBar = document.getElementById('searchBar');
-            reseachBar.remove();
+            if (reseachBar) {
+                reseachBar.remove();
+            }
             const navbardiv = document.querySelector('.navBar');
             navbardiv.remove();
             console.log(navbardiv.childNodes[1]);
@@ -219,7 +266,7 @@ fetch('../all/users')
             const userName = navbardiv.childNodes[1].lastChild.innerHTML;
             // console.log(userProfile, userName);
 
-            //************** get user's profile ************************************/
+            //************** get user's profile Page ************************************/
             fetch('../user/profile', {
                 method: "POST",
                 headers: {
@@ -235,24 +282,12 @@ fetch('../all/users')
             }).then(data => {
                 // ************************ create node for each user's profile element *******************************//
                 //************************* set each user's profile the page *************************************** */       
-                const section = document.createElement('section');
-                section.classList = "profileSection";
-                const divProfile = document.createElement('div');
-                divProfile.classList = "profileDiv";
-                const img = document.createElement('img');
-                img.classList = "profile";
-                img.alt = "profile";
-                img.src = `${data.defaultProfile}`;
-                img.style.width = "40px";
-                divProfile.append(img);
-                section.append(divProfile);
 
-                const detailsSection = document.createElement('section');
-                detailsSection.classList = "detailsSection";
+                // const detailsSection = document.createElement('section');
+                // detailsSection.classList = "detailsSection";
 
                 const div1 = document.createElement('div');
                 div1.classList = "userNameDiv";
-
                 const label = document.createElement('label');
                 label.classList = "userNamePara";
                 label.setAttribute('for', 'userName');
@@ -265,36 +300,36 @@ fetch('../all/users')
                 inputName.value = `${data.data.name}`;
 
                 const i = document.createElement('i');
-                i.classList = "fa fa-pencil"
+                i.classList = "fa fa-pencil";
                 
                 div1.append(label, inputName, i);
-            
+                
+                const labelPassword = document.createElement('label');
+                labelPassword.setAttribute('for', 'password');
+                labelPassword.classList = "labelPassword";
+                labelPassword.innerHTML = "Password";
+
                 const div2 = document.createElement('div');
                 div2.classList = "passworDiv";
                 const inputPassword = document.createElement('input');
                 inputPassword.classList = "inputPassword";
                 inputPassword.name = "password";
 
-                const labelPassword = document.createElement('label');
-                labelPassword.setAttribute('for', 'password');
-                labelPassword.classList = "labelPassword";
-                label.innerHTML = "Password"
-
                 inputPassword.type = "password";
                 inputPassword.value = `${data.password}`;
                 inputPassword.setAttribute('readonly', 'true');
                 div2.append(labelPassword, inputPassword, i);
 
-                detailsSection.append(div1, div2);
+                navbardiv.append(div1);
 
                 const body = document.getElementsByTagName('body');
-                body[0].append(section, detailsSection);
+                body[0].append(navbardiv, div2);
 
                 // console.log(data);
             })
    
         });
-//************************************* search bar people **************************************************************************************//
+        //************************************* search bar people **************************************************************************************//
         const searchBar = document.getElementById('searchBar');
         searchBar.value = "";
         searchBar.addEventListener('change', () => {
@@ -475,7 +510,8 @@ fetch('../all/users')
             // ********************** follow button event set *******************************************************//
             // const followButtons = document.querySelectorAll('.followButton');
             // console.log(followButtons);
-    
+            
+           
           
         });
 
@@ -483,7 +519,6 @@ fetch('../all/users')
                 
             
     
-
 
 
 
