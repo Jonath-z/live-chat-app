@@ -45,20 +45,27 @@ app.get('/login/user', (req, res) => {
     res.render('index');
 });
 
-app.get('/chat', (req, res) => {
-    const userDoc = db.collection('user');
-    async function chatUser() {
-        const snapshot = await userDoc.get();
-        if (snapshot.empty) {
-            console.log('no user');
-        }
-        snapshot.forEach(doc => {
-            console.log(doc);
-        });
-        res.render('chat');
-    }
-    chatUser();
-});
+// app.get('/chat', (req, res) => {
+//     const userDoc = db.collection('user');
+//     async function chatUser() {
+//         const snapshot = await userDoc.get();
+//         if (snapshot.empty) {
+//             console.log('no user');
+//         }
+//         snapshot.forEach(doc => {
+//             // console.log(doc);
+//             const data = [];
+//             data.push(doc.data());
+//             // data.map(doc => { console.log(doc) });
+//             // console.log(data);
+//             // console.log(doc.data());
+//             res.render('chat', {
+//                 data: data
+//             });
+//         });
+//     }
+//     chatUser();
+// });
 
 app.post('/login/user', (req, res) => {
     const userDoc = db.collection('user');
@@ -75,6 +82,7 @@ app.post('/login/user', (req, res) => {
                 res.render('chat', {
                     data: doc.data()
                 });
+                // res.redirect('/chat');
             });
         }
     }
@@ -99,6 +107,9 @@ app.post('/signup/user', (req, res) => {
     // console.log(req.body);
 });
 
+app.get('/return', (req, res) => {
+    res.redirect('/login');
+})
 
 app.post('/login', (req, res) => {
     const userDoc = db.collection('user');
@@ -113,7 +124,7 @@ app.post('/login', (req, res) => {
                 res.render('chat', {
                     data: doc.data()
                 });
-               
+                
             });
         }
     }
@@ -308,6 +319,22 @@ io.on('connection', (socket) => {
         };
         getReceiverID();
     });
+
+    socket.on('user-passworod', data => {
+        const userDoc = db.collection('user');
+
+        async function userProfile() {
+            const snapshot = await userDoc.where("defaultProfile", "==", data.profile).where("data.name", "==", data.name).get();
+            if (snapshot.empty) {
+                console.log("no data");
+            } else {
+                snapshot.forEach(doc => {
+                    socket.emit('user-get-profile', doc.data());
+                });
+            }
+        }
+        userProfile();
+    })
 });
 
 
