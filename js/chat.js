@@ -198,6 +198,7 @@ fetch('../all/users')
                         
 
                             // ************************** open the userChat page *********************************//
+                            
                             const navbardiv = document.querySelector('.chatProfile');
                             const userAccountProfile = navbardiv.src;
                             const userAccountName = navbardiv.nextSibling.firstChild.data;
@@ -211,7 +212,6 @@ fetch('../all/users')
                                     console.log(user);
                                     const userProfile = event.firstElementChild;
                                     const url = userProfile.getAttribute('src');
-
                                     fetch('../live', {
                                         method: "POST",
                                         headers: {
@@ -228,7 +228,9 @@ fetch('../all/users')
                                         return res.text();
                                     }).then(data => {
                                         // console.log(data);
-                                        window.open('../live/chat', '_self').document.write(`${data}`);
+                                        // window.open('../chat','_self').document.write(`${data}`);
+                                        window.open('../chat','_self');
+                                        // document.open(`${data}`,'replace');
                     
                                     });
                                 });
@@ -237,7 +239,7 @@ fetch('../all/users')
                     });
                     
                     console.log(data);
-                })
+                });
 
             console.log(userProfile, userName);
             const peopleIcon = document.querySelector('.fa-users');
@@ -518,7 +520,9 @@ fetch('../all/users')
     });
                 
             
-    
+
+
+
 
 
 

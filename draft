@@ -1,3 +1,0 @@
-        <% data.data.forEach(data => { %>
-            <%- `<nav><img src="${data.defaultProfile}" alt="image" class="chatProfile"><p class="userName">${data.data.name}</p></nav>` %>  
-        <% }) %>

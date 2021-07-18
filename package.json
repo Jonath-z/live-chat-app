@@ -12,8 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "circular-ref-fix": "^1.0.2",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
+    "events": "^3.3.0",
     "express": "^4.17.1",
     "file-system": "^2.2.2",
     "firebase-admin": "^9.10.0",
@@ -23,7 +25,9 @@
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
     "path": "^0.12.7",
+    "querystring": "^0.2.0",
     "serve-favicon": "^2.5.0",
-    "socket.io": "^4.1.2"
+    "socket.io": "^4.1.2",
+    "url": "^0.11.0"
   }
 }

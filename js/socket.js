@@ -59,9 +59,14 @@ fetch('../user/message')
                 messageDiv.classList = "incomeChat";
                 messagePara.classList = "incomeChatPara";
                 messagePara.innerHTML = `${message.message}`;
+                const img = document.createElement('img');
+                img.alt = "profile";
+                img.classList = "chatProfile";
+                img.src = `${message.fromProfile}`;
+                img.style.width = "25px";
                 messageDiv.style.background = "grey";
                 messageDiv.style.width = "50%";
-                messageDiv.appendChild(messagePara);
+                messageDiv.append(img,messagePara);
                 ChatContainer.append(messageDiv);
             };
 
@@ -129,30 +134,34 @@ socket.on('message', (data) => {
     }
 });
 
+
  // ************************************* fa fa-arrow-left event ***************************************//
-// const arrowLeft = document.querySelector('.fa-arrow-left');
-// arrowLeft.addEventListener('click', () => {
-//     socket.emit('user-passworod', {
-//         name: `${usersSender}`,
-//         profile: `${userSenderProfileUrl}`
-//     });
-//     socket.on('user-get-profile', data => {
-//         console.log(data);
-//         fetch('../login', {
-//             method: "POST",
-//             headers: {
-//                 'accept': '*/*',
-//                 'content-type': 'application/json'
-//             },
-//             body: JSON.stringify({
-//                 password: `${data.password}`,
-//                 name: `${data.data.name}`
-//             })
-//         }).then(res => {
-//             return res.text()
-//         }).then(data => {
-//             console.log(data);
-//         });
-//     });
+const arrowLeft = document.querySelector('.fa-arrow-left');
+arrowLeft.addEventListener('click', () => {
+    window.history.back();
+    // socket.emit('user-passworod', {
+    //     name: `${usersSender}`,
+    //     profile: `${userSenderProfileUrl}`
+    // });
+    // socket.on('user-get-profile', data => {
+    //     console.log(data);
+    //     fetch('../login', {
+    //         method: "POST",
+    //         headers: {
+    //             'accept': '*/*',
+    //             'content-type': 'application/json'
+    //         },
+    //         body: JSON.stringify({
+    //             password: `${data.password}`,
+    //             name: `${data.data.name}`
+    //         })
+    //     }).then(res => {
+    //         return res.text()
+    //     }).then(data => {
+    //         console.log(data);
+    //         window.open('').document.write(data);
     
-// });
+    //     });
+    // });
+    
+});

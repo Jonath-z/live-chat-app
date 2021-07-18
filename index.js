@@ -9,13 +9,18 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server, { cors: { origin: "*" } });
 const FacebookStrategy = require('passport-facebook').Strategy;
 const passport = require('passport');
-const { Console } = require('console');
+const { Console, clear } = require('console');
 const fs = require('file-system');
 const { storage } = require('firebase-admin');
 const favicon = require('serve-favicon');
 const moment = require('moment');
 const mongoose = require('mongoose');
-
+const EventEmitter = require('events');
+const eventEmitter = new EventEmitter();
+const url = require('url');
+const querystring = require('querystring');
+const circularFix = require('circular-ref-fix');
+const createRefs = circularFix.createRefs;
 
 // middleware
 app.use(favicon(path.join(__dirname, './public', 'favicon.ico')));
@@ -37,35 +42,13 @@ const mongodb = mongoose.connection;
 
 
 app.get('/', (req, res) => {
-    res.redirect("/login/user");
+    res.redirect("/user/login");
 });
 
 // login page
-app.get('/login/user', (req, res) => {
+app.get('/user/login', (req, res) => {
     res.render('index');
 });
-
-// app.get('/chat', (req, res) => {
-//     const userDoc = db.collection('user');
-//     async function chatUser() {
-//         const snapshot = await userDoc.get();
-//         if (snapshot.empty) {
-//             console.log('no user');
-//         }
-//         snapshot.forEach(doc => {
-//             // console.log(doc);
-//             const data = [];
-//             data.push(doc.data());
-//             // data.map(doc => { console.log(doc) });
-//             // console.log(data);
-//             // console.log(doc.data());
-//             res.render('chat', {
-//                 data: data
-//             });
-//         });
-//     }
-//     chatUser();
-// });
 
 app.post('/login/user', (req, res) => {
     const userDoc = db.collection('user');
@@ -95,16 +78,15 @@ app.get('/signup', (req, res) => {
 });
 
 app.post('/signup/user', (req, res) => {
+    // console.log(req.body);
     async function setUser() {
         const UserData = {
             data: req.body.response,
             defaultProfile: req.body.url
-
         }
         db.collection('user').doc(`${req.body.response.id}`).set(UserData);
     }
     setUser();
-    // console.log(req.body);
 });
 
 app.get('/return', (req, res) => {
@@ -166,15 +148,70 @@ app.get('/live/chat', (req, res) => {
     res.render('userChat');
 });
 
-app.post('/live', (req, res) => {
+// app.get('/chat', (req, res) => {
+    
+//     res.send('chat');
+//     eventEmitter.on('openChat', (userAccountProfile, userAccountName, url, receiver) => {
+//       console.log(userAccountProfile, userAccountName, url, receiver);
+//     });
+// });
+app.post('/live', function (req, res){
     // console.log(req.body);
-    res.render('userChat', {
-        userAccountProfile: req.body.userAccountProfile,
-        userAccountName:req.body.userAccountName,
-        url: req.body.url,
-        receiver: req.body.name
-    });
+    // const data = {
+    //     userAccountProfile: req.body.userAccountProfile,
+    //     userAccountName: req.body.userAccountName,
+    //     url: req.body.url,
+    //     receiver: req.body.name
+    // }
+        
+    // eventEmitter.emit('openChat', data);
+    // res.redirect('/chat');
+
+    
+    // res.render('userChat', {
+    //     userAccountProfile: req.body.userAccountProfile,
+    //     userAccountName:req.body.userAccountName,
+    //     url: req.body.url,
+    //     receiver: req.body.name
+    // });
+    res.redirect(url.format({
+        pathname: "/chat",
+        query: {
+            "userAccountProfile": `${req.body.userAccountProfile}`,
+            "userAccountName": `${req.body.userAccountName}`,
+            "url": `${req.body.url}`,
+            "receiver": `${req.body.name}`
+        }
+    }));
+
 });
+
+app.get(`/chat`, (req, res) => {
+    // res.render('userChat');
+    if (req.query.userAccountName && req.query.userAccountProfile && req.query.url && req.query.receiver !== "undefined") {
+     
+        mongodb.collection("queries").insertOne(req.query);
+        // console.log(req.query);
+    }
+    // const data = [];
+   
+    mongodb.collection("queries").find({}).toArray((err, data) => {
+        const lastChild = data[data.length - 1];
+        // console.log(lastChild)
+        res.render('userChat', {
+            userAccountProfile: lastChild.userAccountProfile,
+            userAccountName: lastChild.userAccountName,
+            url: lastChild.url,
+            receiver: lastChild.receiver
+        });
+        mongodb.collection("queries").deleteOne(lastChild);
+    });
+
+    
+        //  res.status(307).send('chat'); 
+
+});
+
 
 // ********************* from fetch (socket.js) updating user's socketID*******************//
 app.post('/update/socket', (req, res) => {
@@ -334,6 +371,10 @@ io.on('connection', (socket) => {
             }
         }
         userProfile();
+    })
+    socket.on('user-chat', data => {
+        // console.log(data);
+        socket.emit('user-chat', data);
     })
 });
 
