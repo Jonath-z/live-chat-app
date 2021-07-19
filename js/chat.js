@@ -1,4 +1,16 @@
-
+// ************* firebase realtime database init ******************//
+const firebaseConfig = {
+    apiKey: "AIzaSyBFJCVc3WVg-AzuZUjV1nSd3kHqNchRZgM",
+    authDomain: "chatapp-318511.firebaseapp.com",
+    databaseURL: "https://chatapp-318511-default-rtdb.firebaseio.com",
+    projectId: "chatapp-318511",
+    storageBucket: "chatapp-318511.appspot.com",
+    messagingSenderId: "968379108682",
+    appId: "1:968379108682:web:f8ea4a7fe25bda530185b3"
+  };
+  // Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const fireStorage = firebase.storage();
 //*********************** get all user from the server *************************************/
 fetch('../all/users')
     .then(res => {
@@ -155,33 +167,32 @@ fetch('../all/users')
             const userProfile = navbarImage.src;
             const userName = navbarImage.nextSibling.firstChild.data;
 
+            // **********************remove all div on the people page ********************************//
+            const alluserDiv = document.querySelectorAll('.userChatDiv');
+            const chatUserDiv = document.querySelector('.chatUsers');
+            alluserDiv.forEach(div => {
+                div.remove();
+            });
+            // *********** remove all password and userName div on profile page ********//
+            const passwordDiv = document.querySelector('.passworDiv');
+            const userNameDiv = document.querySelector('.userNameDiv');
+            const newButton = document.querySelector('.updateButton');
+            const divNewName = document.querySelector('.divNewName');
+            const divNewPass = document.querySelector('.divNewpass');
+            if (passwordDiv || userNameDiv || newButton || divNewName || divNewPass) {
+                passwordDiv.remove();
+                userNameDiv.remove();
+                newButton.remove();
+                divNewName.remove();
+                divNewPass.remove();
+            }
             fetch('../all/user/followers')
                 .then(res => {
                     return res.json();
                 }).then(data => {
-                    // **********************remove all div on the people page ********************************//
-                    const alluserDiv = document.querySelectorAll('.userChatDiv');
-                    const chatUserDiv = document.querySelector('.chatUsers');
-                    alluserDiv.forEach(div => {
-                        div.remove();
-                    });
-                    // *********** remove all password and userName div on profile page ********//
-                    const passwordDiv = document.querySelector('.passworDiv');
-                    const userNameDiv = document.querySelector('.userNameDiv');
-                    if (passwordDiv || userNameDiv) {
-                        passwordDiv.remove();
-                        userNameDiv.remove();
-                        // div.append(img, para, hr);
-                        // chatUserDiv.append(div);
-                    }
                     
                     data.forEach(user => {
                         if (`${user.followerName}` === `${userName}`) {
-                            // if (passwordDiv && userNameDiv) {
-                            //     passwordDiv.remove();
-                            //     userNameDiv.remove();
-                            // }
-                      
                             const div = document.createElement('div');
                             div.classList = 'userChatDiv';
                             const img = document.createElement('img');
@@ -263,7 +274,7 @@ fetch('../all/users')
             }
             const navbardiv = document.querySelector('.navBar');
             navbardiv.remove();
-            console.log(navbardiv.childNodes[1]);
+            // console.log(navbardiv.childNodes[1]);
             const userProfile = navbardiv.childNodes[1].firstChild.src;
             const userName = navbardiv.childNodes[1].lastChild.innerHTML;
             // console.log(userProfile, userName);
@@ -284,9 +295,7 @@ fetch('../all/users')
             }).then(data => {
                 // ************************ create node for each user's profile element *******************************//
                 //************************* set each user's profile the page *************************************** */       
-
-                // const detailsSection = document.createElement('section');
-                // detailsSection.classList = "detailsSection";
+                // navbardiv.style.cursor = "pointer";
 
                 const div1 = document.createElement('div');
                 div1.classList = "userNameDiv";
@@ -303,7 +312,7 @@ fetch('../all/users')
 
                 const i = document.createElement('i');
                 i.classList = "fa fa-pencil";
-                
+                i.style.cursor = "pointer";
                 div1.append(label, inputName, i);
                 
                 const labelPassword = document.createElement('label');
@@ -321,14 +330,117 @@ fetch('../all/users')
                 inputPassword.value = `${data.password}`;
                 inputPassword.setAttribute('readonly', 'true');
                 div2.append(labelPassword, inputPassword, i);
-
-                navbardiv.append(div1);
+                const userProfileImg = navbardiv.childNodes[1].childNodes[0];
+                const inputFile = document.createElement('input');
+                inputFile.type = "file";
+                inputFile.name = "file";
+                inputFile.hidden = "true";
+                navbardiv.append(div1, inputFile);
 
                 const body = document.getElementsByTagName('body');
                 body[0].append(navbardiv, div2);
 
-                // console.log(data);
-            })
+                // ************************** update user Profile *********************************************************//
+                
+                userProfileImg.style.cursor = "pointer";
+                userProfileImg.onclick = function () {
+                    inputFile.click();
+                }
+                inputFile.onchange = function (event) {
+                    const date = Date.now();
+                    const imageName = `image_${date}`;
+                    const myFile = event.target.files;
+                    console.log(myFile);
+                    const storageRef = fireStorage.ref(`user-profile-photos/` + imageName);
+                    const uploadTask = storageRef.put(myFile[0]);
+
+                    uploadTask.on("state_changed", function (snapshot) {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        // prog.innerHTML = progress + "%";
+            
+                    },
+                    
+                        function (err) {
+                            console.log(err)
+                        },
+       
+                        function () {
+                            uploadTask.snapshot.ref.getDownloadURL().then(function (url) {
+                                console.log(url);
+                                fetch('../update/user/profile', {
+                                    method: "POST",
+                                    headers: {
+                                        "accept": "*/*",
+                                        "content-type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        newProfile: `${url}`,
+                                        userName: `${inputName.value}`,
+                                        userPassword: `${inputPassword.value}`
+                                    })
+                                });
+                            });
+                        },
+                    )
+                }
+                //******************* update name and password ****************************/ 
+                i.onclick = function () {
+                    // ********input new password*************//
+                    const divPass = document.createElement('div');
+                    divPass.classList = "divNewpass";
+                    const labelPass = document.createElement('label');
+                    labelPass.setAttribute('for', 'password');
+                    labelPass.classList = "labelPassword";
+                    labelPass.innerHTML = "New Password";
+                    const inputNewPassword = document.createElement('input');
+                    inputNewPassword.classList = "inputNewPassword";
+                    inputNewPassword.name = "password";
+                    inputNewPassword.type = "password";
+                    inputNewPassword.value = `${data.password}`;
+                    divPass.append(labelPass, inputNewPassword);
+                    // *********input new name**************//
+                    const divName = document.createElement('div');
+                    divName.classList = "divNewName";
+                    const labelName = document.createElement('label');
+                    labelName.classList = "userNamePara";
+                    labelName.setAttribute('for', 'userName');
+                    labelName.innerHTML = "New Name";
+                    const inputNewName = document.createElement('input');
+                    inputNewName.name = "userName";
+                    inputNewName.classList = "inputNewName";
+                    inputNewName.value = `${data.data.name}`;
+                    divName.append(labelName, inputNewName);
+                    // ***********update button*************//
+                    const newButton = document.createElement('button');
+                    newButton.classList = "updateButton";
+                    newButton.innerHTML = "Update";
+                    body[0].append(divName, divPass, newButton);
+                    // const updateButton = document.querySelector('.updateButton');
+                    
+                    newButton.addEventListener("click", function () {
+                        const newPasswordInput = document.querySelector('.inputNewPassword');
+                        const newPassword = newPasswordInput.value;
+                        const newNameInput = document.querySelector('.inputNewName');
+                        const newName = newNameInput.value;
+                        // ************* fetch for updating user's name and password************//
+                        fetch('../update/user/name/password', {
+                            method: "POST",
+                            headers: {
+                                "accept": "*/*",
+                                "content-type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                formerName: `${data.data.name}`,
+                                formerPassword: `${data.password}`,
+                                newName: `${newName}`,
+                                newPassword: `${newPassword}`
+                            })
+                        });
+                        
+                    });
+                }
+
+            });
    
         });
         //************************************* search bar people **************************************************************************************//
@@ -446,11 +558,12 @@ fetch('../all/users')
                             return res.text();
                         }).then(data => {
                             // console.log(data);
-                            window.open('../live/chat').document.write(`${data}`);
+                            window.open('../chat','_self');
                     
                         });
                     });
                 });
+
 
                 const followButtons = document.querySelectorAll('.followButton');
                 followButtons.forEach(button => {

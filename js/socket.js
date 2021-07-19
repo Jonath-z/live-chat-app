@@ -125,11 +125,15 @@ socket.on('message', (data) => {
     if (`${data.fromName}` === `${userReceiver}`) {
         const messageDiv2 = document.createElement('div');
         para.innerHTML = `${data.message}`;
+        const img = document.createElement('img');
+        img.alt = "profile";
+        img.classList = "chatProfile";
+        img.src = `${data.fromProfile}`;
+        img.style.width = "25px";
         para.classList = "outcomeChatPara";
-        messageDiv2.appendChild(para);
         messageDiv2.style.background = "grey";
         messageDiv2.style.width = "50%";
-        messageDiv2.appendChild(para);
+        messageDiv2.append(img,para);
         ChatContainer.appendChild(messageDiv2);
     }
 });
@@ -138,30 +142,5 @@ socket.on('message', (data) => {
  // ************************************* fa fa-arrow-left event ***************************************//
 const arrowLeft = document.querySelector('.fa-arrow-left');
 arrowLeft.addEventListener('click', () => {
-    window.history.back();
-    // socket.emit('user-passworod', {
-    //     name: `${usersSender}`,
-    //     profile: `${userSenderProfileUrl}`
-    // });
-    // socket.on('user-get-profile', data => {
-    //     console.log(data);
-    //     fetch('../login', {
-    //         method: "POST",
-    //         headers: {
-    //             'accept': '*/*',
-    //             'content-type': 'application/json'
-    //         },
-    //         body: JSON.stringify({
-    //             password: `${data.password}`,
-    //             name: `${data.data.name}`
-    //         })
-    //     }).then(res => {
-    //         return res.text()
-    //     }).then(data => {
-    //         console.log(data);
-    //         window.open('').document.write(data);
-    
-    //     });
-    // });
-    
+    window.history.go(-1);
 });

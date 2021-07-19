@@ -156,24 +156,6 @@ app.get('/live/chat', (req, res) => {
 //     });
 // });
 app.post('/live', function (req, res){
-    // console.log(req.body);
-    // const data = {
-    //     userAccountProfile: req.body.userAccountProfile,
-    //     userAccountName: req.body.userAccountName,
-    //     url: req.body.url,
-    //     receiver: req.body.name
-    // }
-        
-    // eventEmitter.emit('openChat', data);
-    // res.redirect('/chat');
-
-    
-    // res.render('userChat', {
-    //     userAccountProfile: req.body.userAccountProfile,
-    //     userAccountName:req.body.userAccountName,
-    //     url: req.body.url,
-    //     receiver: req.body.name
-    // });
     res.redirect(url.format({
         pathname: "/chat",
         query: {
@@ -186,7 +168,7 @@ app.post('/live', function (req, res){
 
 });
 
-app.get(`/chat`, (req, res) => {
+app.get('/chat', (req, res) => {
     // res.render('userChat');
     if (req.query.userAccountName && req.query.userAccountProfile && req.query.url && req.query.receiver !== "undefined") {
      
@@ -204,7 +186,7 @@ app.get(`/chat`, (req, res) => {
             url: lastChild.url,
             receiver: lastChild.receiver
         });
-        mongodb.collection("queries").deleteOne(lastChild);
+        // mongodb.collection("queries").deleteOne(lastChild);
     });
 
     
@@ -290,13 +272,140 @@ app.post('/user/profile', (req, res) => {
             console.log("no data");
         } else {
             snapshot.forEach(doc => {
-                console.log(doc.data());
+                // console.log(doc.data());
                 res.send(doc.data());
                     
             });
         }
     }
     userProfile();
+});
+// ********************************* update user profile (photo) **************************************//
+
+app.post('/update/user/profile', (req, res) => {
+    // console.log(req.body);
+    // *********** update firestore user defaultProfile ******************//
+    const userDoc = db.collection('user');
+    async function updateProfileImg() {
+        const snapshot = await userDoc.where("password", "==", req.body.userPassword).where("data.name", "==", req.body.userName).get();
+        if (snapshot.empty) {
+            console.log("no data");
+        } else {
+            snapshot.forEach(doc => {
+                userDoc.doc(doc.id).update({ "defaultProfile": `${req.body.newProfile}` });
+                    
+            });
+            res.send(req.body);
+        }
+    }
+    updateProfileImg();
+    //******************* update userProfile in mongodb message's collection  **********//
+    mongodb.collection("messages").updateMany(
+        { fromName: `${req.body.userName}` },
+        { $set: { fromProfile: `${req.body.newProfile}` } },
+        function (err, res) {
+            if (err) {
+                console.log(err)
+            }
+            console.log(res.result.nModified + " documents updated");
+            
+        }
+    );
+    // ************** update userProfile in mongodb users-followers's collection (followers case) *********//
+
+            mongodb.collection('users-followers').updateMany(
+                { followerName: `${req.body.userName}` },
+                { $set: { followerProfile: `${req.body.newProfile}` } },
+                function (err, res) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log(res.result.nModified + " documents updated");
+                   
+                }
+            ); 
+   
+    // ************ update userProfile in mongodb users-followers's collection (followed case) **********//
+    mongodb.collection('users-followers').updateMany(
+        { followedName: `${req.body.userName}` },
+        { $set: { followedProfile: `${req.body.newProfile}` } },
+        function (err, res) {
+            if (err) {
+                console.log(err);
+            }
+            console.log(res.result.nModified + " documents updated");
+            mongodb.close();
+        }
+    );
+});
+
+// **************************** update user's name and password *********************************//
+app.post('/update/user/name/password', (req, res) => {
+    // *************update user's name and passWord in firestore*******************//
+    const userDoc = db.collection('user');
+    async function updateNameAndPassword() {
+        const snapshot = await userDoc.where("password", "==", req.body.formerPassword).where("data.name", "==", req.body.formerName).get();
+        if (snapshot.empty) {
+            console.log("no data");
+        } else {
+            snapshot.forEach(doc => {
+                userDoc.doc(doc.id).update({
+                    "data.name": `${req.body.newName}`,
+                    "password": `${req.body.newPassword}`
+                });
+            });
+            res.send(req.body);
+        }
+    }
+    updateNameAndPassword();
+    // *********** update user's name in mongodb messages's collection(sender case) **********//
+    mongodb.collection("messages").updateMany(
+        { fromName: `${req.body.formerName}` },
+        { $set: { fromName: `${req.body.newName}` } },
+        function (err, res) {
+            if (err) {
+                console.log(err)
+            }
+            console.log(res.result.nModified + " documents updated");
+            
+        }
+    );
+    // *********** update user's name in mongodb messages's collection(receiver case) **********//
+    mongodb.collection("messages").updateMany(
+        { to: `${req.body.formerName}` },
+        { $set: { to: `${req.body.newName}` } },
+        function (err, res) {
+            if (err) {
+                console.log(err)
+            }
+            console.log(res.result.nModified + " documents updated");
+            
+        }
+    );
+    // *********** update user's name in mongodb followers's collection(followers case) **********//
+    mongodb.collection('users-followers').updateMany(
+        { followerName: `${req.body.formerName}` },
+        { $set: { followerName: `${req.body.newName}` } },
+        function (err, res) {
+            if (err) {
+                console.log(err);
+            }
+            console.log(res.result.nModified + " documents updated");
+           
+        }
+    );
+    // *********** update user's name in mongodb followers's collection(followed case) **********//
+    mongodb.collection('users-followers').updateMany(
+        { followedName: `${req.body.formerName}` },
+        { $set: { followedName: `${req.body.newName}` } },
+        function (err, res) {
+            if (err) {
+                console.log(err);
+            }
+            console.log(res.result.nModified + " documents updated");
+               
+        }
+    );
 });
 
 // ********************************* get people via reaserch ************************************//
