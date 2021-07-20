@@ -1,0 +1,318 @@
+
+/* ****************************LOGIN PAGE (INDEX.EJS)********************************** */
+body{
+    margin: 0;
+    padding: 0;  
+    background: rgb(0, 0, 20);
+    width: 100%;
+}
+
+.body{
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+
+}
+.signupbtn{
+    height: 333.5px;
+    background:rgb(0, 0, 20);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}
+
+#loginForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 100px;
+    }
+    
+.password,.userName{
+    margin-top: 20px;
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+    margin: 20px 20px 0px 20px;
+    color: rgb(0, 0, 20);
+    font-family: 'Poiret One', sans-serif;
+}
+#password,#userName{
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(0, 0, 20);
+    text-decoration: none;
+    outline: none;
+    font-family: 'Poiret One', sans-serif;
+}
+
+.button{
+    margin-top: 20px;
+}
+
+#signin{
+    margin:0px 150px 0px 140px;
+    display: block;
+    block-size: 30px;
+    width: 80px;
+    background: rgb(0, 0,20);
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: sans-serif;
+ }
+
+.form{
+    background:white;
+    width: 100%;
+    top: 0;
+    position: absolute;
+    z-index: 1;
+    border-bottom-right-radius: 100px ;
+    height: 333.5px;
+}
+
+h3{
+    margin-top: 5em;
+    font-family: 'Poiret One', sans-serif;
+    text-align: center;
+}
+ #btnToSignUp{
+    margin-top: 5em;
+    display: block;
+    block-size: 30px;
+    width: 100px;
+    margin-left: 137.5px;
+    background: white;
+    border: none;
+    border-radius: 5px;
+    color: rgb(0, 0, 20);
+    cursor: pointer;
+} 
+
+/* ***********************************************MEDIA QUERIES************** *****************************************************************************/
+@media(max-width: 414px){
+    h3{
+        margin-top: 4em;
+    }
+    #btnToSignUp{
+        margin-top: 0;
+        width: 10em;
+    }
+    #signin{
+        margin-left: 160px;
+        width: 12em;
+    }
+}
+
+@media(min-width:360px){
+    .form{
+        background:white;
+        width: 100%;
+        top: 0;
+        position: absolute;
+        z-index: 1;
+        border-bottom-right-radius: 100px ;
+        height: 400px;
+    }
+    #signin{
+        margin:20px 150px 0px 130px;
+        display: block;
+        block-size: 30px;
+        width: 80px;
+        background: rgb(0, 0,20);
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: sans-serif;
+     }
+     h3{
+        margin-top: 3em;
+    }
+    #btnToSignUp{
+        margin-top: 2em;
+    }
+     #btnToSignUp{
+        margin-left: 130px;
+    } 
+
+}
+@media(min-width:375px){
+    h3{
+        margin-top: 7em;
+    }
+    #btnToSignUp{
+        margin-top: 0em;
+    }
+     #btnToSignUp{
+        margin-left: 130px;
+    } 
+}
+
+@media(min-width:768px){
+    #signin{
+        margin:20px 150px 0px 260px;
+     }
+     .form{
+        background:white;
+        width: 100%;
+        top: 0;
+        position: absolute;
+        z-index: 1;
+        border-bottom-right-radius: 100px ;
+        height: 400px;
+    }
+    h3{
+        margin-top: -2em;
+        font-size: 30px;
+    }
+    #btnToSignUp{
+        margin-top: 0;
+    }
+    #btnToSignUp{
+        margin-left: 310px;
+        width: 9em;
+    } 
+}
+
+@media(min-width:800px){
+    #signin{
+        margin:20px 150px 0px 310px;
+        width: 12em;
+     }
+     .form{
+        background:white;
+        width: 100%;
+        top: 0;
+        position: absolute;
+        z-index: 1;
+        border-bottom-right-radius: 100px ;
+        height: 400px;
+    }
+    h3{
+        margin-top: -9em;
+        font-size: 40px;
+    }
+    #btnToSignUp{
+        margin-top: 0;
+    }
+    #btnToSignUp{
+        margin-left: 310px;
+        width: 12em;
+    } 
+}
+
+@media(min-width:1024px){
+    .password,.userName{
+        margin-top: 20px;
+        display:grid;
+        grid-template-columns: 1fr 2fr;
+        margin: 20px 80px 0px 50px;
+        color: rgb(0, 0, 20);
+        font-family: 'Poiret One', sans-serif;
+    }
+    label{
+        margin-left:50px
+    }
+    h3{
+        margin-top: -9em;
+        font-size: 50px;
+    }
+    #btnToSignUp{
+        margin-top: 0;
+    }
+    #btnToSignUp{
+        margin-left: 400px;
+        width: 15em;
+
+    } 
+    #signin{
+        margin:20px 150px 0px 350px;
+        width: 15em;
+     }
+}
+@media(min-width: 1060px){
+    .password,.userName{
+        margin-top: 20px;
+        display:grid;
+        grid-template-columns: 1fr 2fr;
+        margin: 20px 500px 0px 500px;
+        color: rgb(0, 0, 20);
+        font-family: 'Poiret One', sans-serif;
+    }
+    #signin{
+        margin:20px 150px 0px 750px;
+        width: 15em;
+     }
+     h3{
+        margin-top: 0em;
+        font-size: 50px;
+    }
+    #btnToSignUp{
+        margin-top: 0;
+    }
+    #btnToSignUp{
+        margin-left: 750px;
+        width: 15em;
+
+    } 
+}
+
+@media(min-width: 1280px){
+    .password,.userName{
+        margin-top: 20px;
+        display:grid;
+        grid-template-columns: 1fr 2fr;
+        margin: 20px 300px 0px 250px;
+        color: rgb(0, 0, 20);
+        font-family: 'Poiret One', sans-serif;
+    }
+    #signin{
+        margin:20px 150px 0px 500px;
+        width: 15em;
+     }
+     h3{
+        margin-top: 0em;
+        font-size: 50px;
+    }
+    #btnToSignUp{
+        margin-top: 0;
+    }
+    #btnToSignUp{
+        margin-left: 500px;
+        width: 15em;
+
+    } 
+}
+
+@media(min-width: 1440px){
+    .password,.userName{
+        margin-top: 20px;
+        display:grid;
+        grid-template-columns: 1fr 2fr;
+        margin: 20px 300px 0px 250px;
+        color: rgb(0, 0, 20);
+        font-family: 'Poiret One', sans-serif;
+    }
+    #signin{
+        margin:20px 150px 0px 550px;
+        width: 15em;
+     }
+     h3{
+        margin-top: 0em;
+        font-size: 50px;
+    }
+    #btnToSignUp{
+        margin-top: 0;
+    }
+    #btnToSignUp{
+        margin-left: 550px;
+        width: 15em;
+
+    } 
+}

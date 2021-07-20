@@ -1,0 +1,353 @@
+body{
+    margin:0;
+    padding:0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: white
+}
+.fbContainer{
+    height: 333.5px;
+    background: white;
+    bottom: 0;
+    width: 100%;
+    position:absolute;
+    color:rgb(0, 0, 20);
+}
+.form{
+    background:rgb(0, 0, 20);
+    position: absolute;
+    height: 333.5px;
+    top: 0;
+    border-bottom-right-radius: 60px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    color: white;
+    
+}
+#loginForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 100px;
+    }
+.password,.userName{
+        margin-top: 20px;
+        display:grid;
+        grid-template-columns: 1fr 2fr;
+        margin: 20px 20px 0px 20px;
+        color: white;
+        font-family: 'Poiret One', sans-serif;
+}
+#password,#userName{
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom-width: 1px;
+    border-bottom-color: white;
+    text-decoration: none;
+    outline: none;
+    background: rgb(0, 0, 20);
+    color: white;
+    font-family: 'Poiret One', sans-serif;
+}
+.signInbtn{
+    margin-top:20px;
+}
+#signup{
+    margin:0px 150px 0px 140px;
+    display: block;
+    block-size: 30px;
+    width: 80px;
+    background: white;
+    border: none;
+    color: rgb(0, 0, 20);
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: sans-serif;
+}
+h3{
+    margin-top: 5em;
+    font-family: 'Poiret One', sans-serif;
+    text-align: center;
+}
+#facebookLogin{
+    margin-top: 5em;
+    display: block;
+    block-size: 30px;
+    width: 100px;
+    margin-left: 137.5px;
+    background: white;
+    border: none;
+    border-radius: 5px;
+    color: rgb(0, 0, 20);
+    cursor: pointer;
+} 
+
+/* ***********************************MEDIA QUERIES********************************************************** */
+
+@media(max-width:414px){
+    #facebookLogin{
+        margin-left: 150px;
+    }
+}
+@media(min-width:360px){
+    .fbContainer{
+        height: 320px;
+    }
+    .form{
+
+        height: 370px;
+    }
+}
+@media(min-width:768px){
+    .password,.userName{
+        margin-top: 20px;
+        display:grid;
+        grid-template-columns: 1fr 2fr;
+        margin: 20px 150px 0px 150px;
+        color: white;
+        font-family: 'Poiret One', sans-serif;
+}
+#signup{
+    margin:0px 150px 0px 310px;
+    display: block;
+    block-size: 30px;
+    width: 80px;
+    background: white;
+    border: none;
+    color: rgb(0, 0, 20);
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: sans-serif;
+}
+.form{
+
+    height: 400px;
+
+}
+h3{
+    margin-top: -2em;
+    font-size: 30px;
+}
+#facebookLogin{
+    margin-top: 5em;
+    display: block;
+    block-size: 30px;
+    width: 100px;
+    margin-left: 310px;
+    background: white;
+    border: none;
+    border-radius: 5px;
+    color: rgb(0, 0, 20);
+    cursor: pointer;
+} 
+
+}
+
+@media(min-width:834px){
+#signup{
+    margin:20px 150px 0px 390px;
+    display: block;
+    block-size: 30px;
+    width: 80px;
+    background: white;
+    border: none;
+    color: rgb(0, 0, 20);
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: sans-serif;
+}
+.form{
+
+    height: 500px;
+
+}
+.password,.userName{
+    margin-top: 50px;
+}
+h3{
+    margin-top: -2em;
+    font-size: 30px;
+}
+#facebookLogin{
+    margin-top: 5em;
+    display: block;
+    block-size: 30px;
+    width: 100px;
+    margin-left: 390px;
+    background: white;
+    border: none;
+    border-radius: 5px;
+    color: rgb(0, 0, 20);
+    cursor: pointer;
+} 
+
+}
+
+@media(min-width:834px){
+    #signup{
+        margin:20px 150px 0px 390px;
+        display: block;
+        block-size: 30px;
+        width: 80px;
+        background: white;
+        border: none;
+        color: rgb(0, 0, 20);
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: sans-serif;
+    }
+    .form{
+    
+        height: 500px;
+    
+    }
+    .password,.userName{
+        margin-top: 50px;
+    }
+    h3{
+        margin-top: -2em;
+        font-size: 30px;
+    }
+    #facebookLogin{
+        margin-top: 5em;
+        display: block;
+        block-size: 30px;
+        width: 100px;
+        margin-left: 360px;
+        background: white;
+        border: none;
+        border-radius: 5px;
+        color: rgb(0, 0, 20);
+        cursor: pointer;
+    } 
+    
+    }
+    
+
+@media(min-width:1024px){
+    #signup{
+        margin:20px 150px 0px 390px;
+        display: block;
+        block-size: 30px;
+        width: 80px;
+        background: white;
+        border: none;
+        color: rgb(0, 0, 20);
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: sans-serif;
+    }
+
+    h3{
+        margin-top: -7em;
+        font-size: 35px;
+    }
+    .form{
+        height: 600px;
+    }
+    #facebookLogin{
+
+        margin-left: 470px;
+
+
+    } 
+    
+}
+    
+
+
+        
+        @media(min-width:1440px){
+            .password,.userName{
+                margin-top: 20px;
+                display:grid;
+                grid-template-columns: 1fr 2fr;
+                margin: 20px 300px 0px 300px;
+                color: white;
+                font-family: 'Poiret One', sans-serif;
+        }
+            #signup{
+                margin:20px 150px 0px 580px;
+                display: block;
+                block-size: 30px;
+                width: 80px;
+                background: white;
+                border: none;
+                color: rgb(0, 0, 20);
+                border-radius: 5px;
+                cursor: pointer;
+                font-family: sans-serif;
+            }
+        
+            h3{
+                margin-top: 0em;
+                font-size: 35px;
+            }
+            #facebookLogin{
+                margin-top: 5em;
+                display: block;
+                block-size: 30px;
+                width: 100px;
+                margin-left: 590px;
+                background: white;
+                border: none;
+                border-radius: 5px;
+                color: rgb(0, 0, 20);
+                cursor: pointer;
+            } 
+            
+            }
+
+
+            @media(min-width:1280px){
+                .password,.userName{
+                    margin-top: 20px;
+                    display:grid;
+                    grid-template-columns: 1fr 2fr;
+                    margin: 20px 300px 0px 300px;
+                    color: white;
+                    font-family: 'Poiret One', sans-serif;
+            }
+                #signup{
+                    margin:20px 150px 0px 580px;
+                    display: block;
+                    block-size: 30px;
+                    width: 80px;
+                    background: white;
+                    border: none;
+                    color: rgb(0, 0, 20);
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-family: sans-serif;
+                }
+                .form{
+
+                    height: 400px;
+                
+                }
+            
+                h3{
+                    margin-top: 0em;
+                    font-size: 35px;
+                }
+                #facebookLogin{
+                    margin-top: 5em;
+                    display: block;
+                    block-size: 30px;
+                    width: 100px;
+                    margin-left: 590px;
+                    background: white;
+                    border: none;
+                    border-radius: 5px;
+                    color: rgb(0, 0, 20);
+                    cursor: pointer;
+                } 
+                
+                }
+                
+            
+        
