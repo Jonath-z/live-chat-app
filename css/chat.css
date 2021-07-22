@@ -1,8 +1,61 @@
+body{
+    margin: 0;
+    padding: 0;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    top: 0;
+}
+
 .chatProfile{
-    width: 30px;
+    width: 50px;
+    border-radius: 50%;
+    height: 50px;
 }
 .userChatProfile{
-    width: 30px;
+    width: 50px;
+    border-radius: 50%;
+    height: 50px;
+}
+.header{
+    background: rgb(0,0,20);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+nav{
+    display: flex;
+    flex-direction: row;
+}
+.chatProfileNav{
+    margin: 20px 0px 0px 20px;
+}
+
+.userName{
+    font-family: sans-serif;
+    margin-left: 80px;
+    margin-top: 40px;
+}
+.reseach{
+    display: block;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+}
+#searchBar{
+    margin-top: 20px;
+    font-family: sans-serif;
+    color: rgb(0,0,20);
+    border: 1px solid rgb(0,0,20);
+    text-decoration: none;
+    outline:none;
+    border-radius: 5px;
+}
+.chatUsers{
+    margin-top: 20px;
 }
 .icons {
     position: fixed;
@@ -11,9 +64,95 @@
     width: 100%;
     text-align: center;
     margin-bottom: 5px;
+    cursor: pointer;
+}
+span{
+    color: rgb(0,0,20);
+    font-family: sans-serif;
 }
 .downbar{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr ;
     justify-content: center;
+}
+
+/* *****************************************profile page ****************************************************** */
+.userNameDiv{
+    text-align: center;
+    margin-top: 30px;
+}
+.passworDiv{
+    text-align: center;
+    margin-top: 30px;
+}
+.divNewName{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    text-align: center;
+    margin-top: 30px;
+    margin-right: 50px;
+}
+.divNewpass{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    margin-top: 30px;
+    text-align: center;
+    margin-right: 50px;
+}
+label{
+    font-family: sans-serif;
+}
+.inputPassword,.inputNewPassword{
+    border: 1px solid rgb(0,0,20);
+    text-decoration: none;
+    outline:none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    margin-left: 15px;
+    
+}
+.inputName,.inputNewName{
+    border: 1px solid rgb(0,0,20);
+    text-decoration: none;
+    outline:none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    margin-left: 20px;
+    
+}
+
+.updateButton{
+    margin-top: 30px;
+    border: none;
+    border-radius: 5px;
+    background: rgb(0,0,20);
+    color: white;
+    font-family: sans-serif;
+    height: 25px;
+    width: 10em;
+}
+
+.divButton{
+    text-align: center;
+}
+/* ********************************************************chat page *************************************************** */
+.hr{
+    color: rgb(0,0,20);
+    margin-left: 5em;
+    margin-right: 1em;
+    opacity: 0.5;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.userChatDiv{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+.userChatDiv{
+    margin-top: 10px;
+}
+.userName{
+    font-family: sans-serif;
 }

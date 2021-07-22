@@ -138,11 +138,15 @@ h3{
         margin-top: 2em;
     }
      #btnToSignUp{
-        margin-left: 130px;
+        margin-left: 100px;
     } 
 
 }
 @media(min-width:375px){
+    #signin{
+        margin-left: 130px;
+        width: 10em;
+    }
     h3{
         margin-top: 7em;
     }
@@ -156,7 +160,7 @@ h3{
 
 @media(min-width:768px){
     #signin{
-        margin:20px 150px 0px 260px;
+        margin:20px 150px 0px 310px;
      }
      .form{
         background:white;
@@ -232,7 +236,7 @@ h3{
 
     } 
     #signin{
-        margin:20px 150px 0px 350px;
+        margin:20px 150px 0px 400px;
         width: 15em;
      }
 }
@@ -312,6 +316,33 @@ h3{
     }
     #btnToSignUp{
         margin-left: 550px;
+        width: 15em;
+
+    } 
+}
+
+@media(min-width: 1760px){
+    .password,.userName{
+        margin-top: 20px;
+        display:grid;
+        grid-template-columns: 1fr 2fr;
+        margin: 20px 700px 0px 600px;
+        color: rgb(0, 0, 20);
+        font-family: 'Poiret One', sans-serif;
+    }
+    #signin{
+        margin:20px 550px 0px 800px;
+        width: 15em;
+     }
+     h3{
+        margin-top: 0em;
+        font-size: 50px;
+    }
+    #btnToSignUp{
+        margin-top: 0;
+    }
+    #btnToSignUp{
+        margin-left: 800px;
         width: 15em;
 
     } 

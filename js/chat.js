@@ -48,12 +48,27 @@ fetch('../all/users')
                             para.classList = 'username';
                             para.innerHTML = user.data.name;
                             const hr = document.createElement('hr');
+                            hr.style.border = "1px solid rgb(0,0,20)";
+                            hr.classList = "hr";
                             // const divButton = document.createElement('div');
                             // divButton.classList = "divButton";
                             // divButton.append(followButton);
-                
-                            div.append(img, para, followButton, hr);
-                            chatUserDiv.append(div);
+                            div.style.display = "grid";
+                            div.style.gridTemplateColumns = "1fr 2fr 1fr";
+                            followButton.style.border = "none"
+                            followButton.style.height = "25px"
+                            followButton.style.borderRadius = "5px";
+                            followButton.style.marginRight = "20px";
+                            followButton.style.marginTop = "20px";
+                            followButton.style.fontFamily = "sans-serif";
+                            
+                            img.style.marginLeft = "20px";
+                            para.style.fontFamily = "sans-serif";
+                            hr.style.marginLeft = "5em";
+                            hr.style.marginRight = "1em";
+                            hr.style.opacity = "0.5";
+                            div.append(img, para, followButton);
+                            chatUserDiv.append(div, hr);
                             
                             // chatUserDiv.appendChild(userChatProfile);
                             // console.log(userChat);
@@ -67,7 +82,7 @@ fetch('../all/users')
             }
         });
 
-        // ********************** follow button event set *******************************************************//
+        // ********************** follow button (event set) *******************************************************//
         const followButtons = document.querySelectorAll('.followButton');
         // console.log(followButtons);
         followButtons.forEach(button => {
@@ -81,8 +96,10 @@ fetch('../all/users')
                     const div = button.parentNode.childNodes;
                     const followedProfile = div[0].src;
                     const followedName = div[1].textContent;
-                    console.log(div);
+                    // console.log(div);
                     button.innerHTML = "Unfollow";
+                    button.style.background = "rgb(0,0,20)";
+                    button.style.color = "white";
                     //**************** if user is follewed so the event is unfollow ****************** //
                     fetch('../set/followers', {
                         method: "POST",
@@ -108,7 +125,8 @@ fetch('../all/users')
                     const followedName = div[1].textContent;
                     // console.log(followedName,followedProfile);
                     button.innerHTML = "Follow";
-    
+                    button.style.background = " rgb(241, 241, 241)";
+                    button.style.color = "rgb(0,0,20)";
                     fetch('../unfollow', {
                         method: "POST",
                         headers: {
@@ -145,6 +163,8 @@ fetch('../all/users')
                         if (`${userProfile}` === `${user.followerProfile}` && `${userName}` === `${user.followerName}`) {
                             if (`${divName}` === `${user.followedName}` && `${divProfile}` === `${user.followedProfile}`) {
                                 div.childNodes[2].innerHTML = "Unfollow";
+                                div.childNodes[2].style.background = "rgb(0,0,20)";
+                                div.childNodes[2].style.color = "white";
                             }
                         }
                     });
@@ -155,9 +175,9 @@ fetch('../all/users')
         peopleIcon.style.color = "red";
         peopleIcon.addEventListener('click', () => {
             const chatIcon = document.querySelector('.fa-comment');
-            chatIcon.style.color = "black";
+            chatIcon.style.color = "rgb(0,0,20)";
             peopleIcon.style.color = "red";
-            profileIcon.style.color = "black";
+            profileIcon.style.color = "rgb(0,0,20)";
             window.document.location.reload();
         });
         //**************************************************get chat page ************************************************************ //
@@ -170,6 +190,12 @@ fetch('../all/users')
             // **********************remove all div on the people page ********************************//
             const alluserDiv = document.querySelectorAll('.userChatDiv');
             const chatUserDiv = document.querySelector('.chatUsers');
+            const hr = document.querySelectorAll('.hr');
+            hr.forEach(line => {
+                if (line) {
+                    line.remove();
+                }
+            })
             alluserDiv.forEach(div => {
                 div.remove();
             });
@@ -182,9 +208,14 @@ fetch('../all/users')
             if (passwordDiv || userNameDiv || newButton || divNewName || divNewPass) {
                 passwordDiv.remove();
                 userNameDiv.remove();
-                newButton.remove();
-                divNewName.remove();
-                divNewPass.remove();
+                if (newButton) {
+                    newButton.remove();
+                }
+                if (divNewName || divNewPass) {
+                    divNewName.remove();
+                    divNewPass.remove();
+                }
+
             }
             fetch('../all/user/followers')
                 .then(res => {
@@ -203,9 +234,12 @@ fetch('../all/users')
                             para.classList = 'username';
                             para.innerHTML = user.followedName;
                             const hr = document.createElement('hr');
-
-                            div.append(img, para, hr);
-                            chatUserDiv.appendChild(div);
+                            hr.classList = "hr";
+                            hr.style.borderBottom = "1px solid rgb(0,0,20)";
+                            img.style.marginLeft = "20px"
+                            para.style.fontFamily = "sans-serif";
+                            div.append(img, para);
+                            chatUserDiv.append(div, hr);
                         
 
                             // ************************** open the userChat page *********************************//
@@ -215,35 +249,38 @@ fetch('../all/users')
                             const userAccountName = navbardiv.nextSibling.firstChild.data;
 
                             const userChatEvent = document.querySelectorAll('.userChatDiv');
-                            userChatEvent.forEach(event => {
-                                event.addEventListener('click', () => {
+                            userChatEvent.forEach(user => {
+                                user.addEventListener('click', () => {
                                     // console.log(event);
 
-                                    const user = event.childNodes[1].innerHTML;
-                                    console.log(user);
-                                    const userProfile = event.firstElementChild;
+                                    const users = user.childNodes[1].innerHTML;
+                                    // console.log(users);
+                                    const userProfile = user.firstElementChild;
                                     const url = userProfile.getAttribute('src');
-                                    fetch('../live', {
-                                        method: "POST",
-                                        headers: {
-                                            'Accept': '*/*',
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                            userAccountProfile: userAccountProfile,
-                                            userAccountName: userAccountName,
-                                            url: url,
-                                            name: user
-                                        })
-                                    }).then(res => {
-                                        return res.text();
-                                    }).then(data => {
-                                        // console.log(data);
-                                        // window.open('../chat','_self').document.write(`${data}`);
-                                        window.open('../chat','_self');
-                                        // document.open(`${data}`,'replace');
+                                    async function openChat() {
+                                     await   fetch('../live', {
+                                            method: "POST",
+                                            headers: {
+                                                'content-type': 'application/json',
+                                                'accept': '*/*',
+                                            },
+                                            body: JSON.stringify({
+                                                userAccountProfile: userAccountProfile,
+                                                userAccountName: userAccountName,
+                                                url: url,
+                                                name: users
+                                            })
+                                        }).then(res => {
+                                            return res.text();
+                                        }).then(data => {
+                                            // console.log(data);
+                                            // window.open('../chat','_self').document.write(`${data}`);
+                                            window.open('../chat', '_self');
+                                            // document.open(`${data}`,'replace');
                     
-                                    });
+                                        });
+                                    }
+                                    openChat();
                                 });
                             });
                         }
@@ -254,16 +291,16 @@ fetch('../all/users')
 
             console.log(userProfile, userName);
             const peopleIcon = document.querySelector('.fa-users');
-            peopleIcon.style.color = "black";
-            profileIcon.style.color = "black";
+            peopleIcon.style.color = "rgb(0,0,20)";
+            profileIcon.style.color = "rgb(0,0,20)";
             chatIcon.style.color = "red";
         });
         // ********************************** set profile page's element ******************************************//
         const profileIcon = document.querySelector('.fa-user');
         profileIcon.addEventListener('click', () => {
             profileIcon.style.color = "red";
-            chatIcon.style.color = "black";
-            peopleIcon.style.color = "black";
+            chatIcon.style.color = "rgb(0,0,20)";
+            peopleIcon.style.color = "rgb(0,0,20)";
             const alluserDiv = document.querySelectorAll('.userChatDiv');
             alluserDiv.forEach(div => {
                 div.remove();
@@ -272,12 +309,17 @@ fetch('../all/users')
             if (reseachBar) {
                 reseachBar.remove();
             }
-            const navbardiv = document.querySelector('.navBar');
-            navbardiv.remove();
-            // console.log(navbardiv.childNodes[1]);
-            const userProfile = navbardiv.childNodes[1].firstChild.src;
-            const userName = navbardiv.childNodes[1].lastChild.innerHTML;
+
+            const navbardiv = document.querySelector('.chatProfile');
+            const userProfile = navbardiv.src;
+            const userName = navbardiv.nextSibling.firstChild.data;
             // console.log(userProfile, userName);
+            // console.log(navbardiv);
+            const chatUserSection = document.querySelector('.chatUsers');
+            const hr = document.querySelectorAll('.hr');
+            hr.forEach(line => {
+                line.remove()
+            });
 
             //************** get user's profile Page ************************************/
             fetch('../user/profile', {
@@ -330,19 +372,22 @@ fetch('../all/users')
                 inputPassword.value = `${data.password}`;
                 inputPassword.setAttribute('readonly', 'true');
                 div2.append(labelPassword, inputPassword, i);
-                const userProfileImg = navbardiv.childNodes[1].childNodes[0];
+                // const userProfileImg = userProfile;
                 const inputFile = document.createElement('input');
                 inputFile.type = "file";
                 inputFile.name = "file";
                 inputFile.hidden = "true";
-                navbardiv.append(div1, inputFile);
+                chatUserSection.append(div1, div2, inputFile);
 
-                const body = document.getElementsByTagName('body');
-                body[0].append(navbardiv, div2);
+                // const body = document.getElementsByTagName('body');
+                // body[0].append(navbardiv, div2);
 
                 // ************************** update user Profile *********************************************************//
                 
-                userProfileImg.style.cursor = "pointer";
+                // userProfile.style.cursor = "pointer";
+                // const navbardiv = document.querySelector('.chatProfile');
+                // *************************store new profile in firestore ************************************************//
+                const userProfileImg = navbardiv;
                 userProfileImg.onclick = function () {
                     inputFile.click();
                 }
@@ -350,10 +395,9 @@ fetch('../all/users')
                     const date = Date.now();
                     const imageName = `image_${date}`;
                     const myFile = event.target.files;
-                    console.log(myFile);
+                    // console.log(myFile)
                     const storageRef = fireStorage.ref(`user-profile-photos/` + imageName);
                     const uploadTask = storageRef.put(myFile[0]);
-
                     uploadTask.on("state_changed", function (snapshot) {
                         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                         // prog.innerHTML = progress + "%";
@@ -411,10 +455,13 @@ fetch('../all/users')
                     inputNewName.value = `${data.data.name}`;
                     divName.append(labelName, inputNewName);
                     // ***********update button*************//
+                    const divButton = document.createElement('div');
+                    divButton.classList = "divButton";
                     const newButton = document.createElement('button');
                     newButton.classList = "updateButton";
                     newButton.innerHTML = "Update";
-                    body[0].append(divName, divPass, newButton);
+                    divButton.append(newButton);
+                    chatUserSection.append(divName, divPass, divButton);
                     // const updateButton = document.querySelector('.updateButton');
                     
                     newButton.addEventListener("click", function () {
@@ -440,12 +487,13 @@ fetch('../all/users')
                     });
                 }
 
-            });
+            }).catch(err => console.log(err));
    
         });
         //************************************* search bar people **************************************************************************************//
         const searchBar = document.getElementById('searchBar');
         searchBar.value = "";
+        // *****************************search user to the server ***************************//
         searchBar.addEventListener('change', () => {
             fetch('../user/search', {
                 method: "POST",
@@ -459,11 +507,13 @@ fetch('../all/users')
             }).then(res => {
                 return res.json();
             }).then(data => {
+                // ******************clear the page **********************************//
                 const allDiv = document.querySelectorAll('.userChatDiv');
                 allDiv.forEach(div => {
                     div.remove();
                 });
                 peopleIcon.style.color = "black";
+                //**********************check if user exist ********************************* */
                 if (data.data === "empty") {
                     const para = document.createElement('p');
                     para.classList = "noData";
@@ -473,7 +523,20 @@ fetch('../all/users')
                 }
         
                 searchBar.value = "";
+                const errorPara = document.querySelector('.noData');
+                const hr = document.querySelectorAll('.hr');
+                console.log(hr);
+                if (hr) {
+                    hr.forEach(line => {
+                        line.remove();
+                    });
+                }
+                if (errorPara) {
+                    errorPara.remove();
+                }
+                //****************************desplay users*************************************** */
                 data.forEach(user => {
+                   
                     const chatUserDiv = document.querySelector('.chatUsers');
                     // const userChat = `<div class="userChatDiv"><img src="${user.defaultProfile}" alt="profile" class="userChatProfile"> ${user.data.name}</div><hr>`;
                     const div = document.createElement('div');
@@ -486,6 +549,7 @@ fetch('../all/users')
                     const followButton = document.createElement('button');
 
 
+                    //***************************** set and deplay user's following state ***************************************//
                     fetch('../all/user/followers')
                         .then(res => {
                             return res.json();
@@ -502,7 +566,9 @@ fetch('../all/users')
                                     const divName = div.childNodes[1].textContent;
                                     if (`${userProfile}` === `${user.followerProfile}` && `${userName}` === `${user.followerName}`) {
                                         if (`${divName}` === `${user.followedName}` && `${divProfile}` === `${user.followedProfile}`) {
-                                            followButton.innerHTML = "Unfollow";
+                                            div.childNodes[2].innerHTML = "Unfollow";
+                                            div.childNodes[2].style.background = "rgb(0,0,20)";
+                                            div.childNodes[2].style.color = "white";
                                         }
                                     }
                                 });
@@ -510,59 +576,69 @@ fetch('../all/users')
                         });
 
 
-                    followButton.innerHTML = "Follow";
-                    followButton.classList = "followButton";
-                    para.classList = 'username';
-                    para.innerHTML = user.data.name;
-                    const hr = document.createElement('hr');
-                    // const divButton = document.createElement('div');
-                    // divButton.classList = "divButton";
-                    // divButton.append(followButton);
-                        
-                    div.append(img, para, followButton, hr);
-                    chatUserDiv.append(div);
-                                    
-                    // chatUserDiv.appendChild(userChatProfile);
-                    // console.log(userChat);
-                    // console.log(chatUserDiv); 
-                    // console.log(userProfile);
+                        // const followButton = document.createElement('button');
+                        followButton.innerHTML = "Follow";
+                        followButton.classList = "followButton";
+                        para.classList = 'username';
+                        para.innerHTML = user.data.name;
+                        const hr = document.createElement('hr');
+                        hr.style.border = "1px solid rgb(0,0,20)";
+                        hr.classList = "hr";
+                        // const divButton = document.createElement('div');
+                        // divButton.classList = "divButton";
+                        // divButton.append(followButton);
+                        div.style.display = "grid";
+                        div.style.gridTemplateColumns = "1fr 2fr 1fr";
+                        followButton.style.border = "none"
+                        followButton.style.height = "25px"
+                        followButton.style.borderRadius = "5px";
+                        followButton.style.marginRight = "20px";
+                        followButton.style.marginTop = "20px";
+                        followButton.style.fontFamily = "sans-serif";
+                        img.style.marginLeft = "20px";
+                        para.style.fontFamily = "sans-serif";
+                        hr.style.marginLeft = "5em";
+                        hr.style.marginRight = "1em";
+                        hr.style.opacity = "0.5";
+                        div.append(img, para, followButton);
+                        chatUserDiv.append(div, hr);
                 });
-                //************************** get all users and desplay in people page *********************************/
-                const navbardiv = document.querySelector('.chatProfile');
-                const userAccountProfile = navbardiv.src;
-                const userAccountName = navbardiv.nextSibling.firstChild.data;
+                //************************** Open user discution *********************************/
+                // const navbardiv = document.querySelector('.chatProfile');
+                // const userAccountProfile = navbardiv.src;
+                // const userAccountName = navbardiv.nextSibling.firstChild.data;
 
-                const userChatEvent = document.querySelectorAll('.userChatDiv');
-                userChatEvent.forEach(event => {
-                    event.addEventListener('click', () => {
-                        // console.log(event);
+                // const userChatEvent = document.querySelectorAll('.userChatDiv');
+                // userChatEvent.forEach(event => {
+                //     event.addEventListener('click', () => {
+                //         // console.log(event);
 
-                        const user = event.childNodes[1].innerHTML;
-                        console.log(user);
-                        const userProfile = event.firstElementChild;
-                        const url = userProfile.getAttribute('src');
+                //         const user = event.childNodes[1].innerHTML;
+                //         console.log(user);
+                //         const userProfile = event.firstElementChild;
+                //         const url = userProfile.getAttribute('src');
 
-                        fetch('../live', {
-                            method: "POST",
-                            headers: {
-                                'Accept': '*/*',
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                userAccountProfile: userAccountProfile,
-                                userAccountName: userAccountName,
-                                url: url,
-                                name: user
-                            })
-                        }).then(res => {
-                            return res.text();
-                        }).then(data => {
-                            // console.log(data);
-                            window.open('../chat','_self');
+                //         fetch('../live', {
+                //             method: "POST",
+                //             headers: {
+                //                 'Accept': '*/*',
+                //                 'Content-Type': 'application/json'
+                //             },
+                //             body: JSON.stringify({
+                //                 userAccountProfile: userAccountProfile,
+                //                 userAccountName: userAccountName,
+                //                 url: url,
+                //                 name: user
+                //             })
+                //         }).then(res => {
+                //             return res.text();
+                //         }).then(data => {
+                //             // console.log(data);
+                //             window.open('../chat', '_self');
                     
-                        });
-                    });
-                });
+                //         });
+                //     });
+                // });
 
 
                 const followButtons = document.querySelectorAll('.followButton');

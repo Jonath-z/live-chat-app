@@ -22,6 +22,8 @@ const querystring = require('querystring');
 const circularFix = require('circular-ref-fix');
 const createRefs = circularFix.createRefs;
 
+
+
 // middleware
 app.use(favicon(path.join(__dirname, './public', 'favicon.ico')));
 app.use(express.json());
@@ -29,6 +31,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/statics', express.static(path.join(__dirname, './js')));
 app.use('/static', express.static(path.join(__dirname, './css')));
 app.set('view engine', 'ejs');
+
 
 // ******************************** firestore initialization *******************************************//
 firestore.initializeApp({
@@ -442,16 +445,16 @@ io.on('connection', (socket) => {
             }
             else {
                 snapshot.forEach(doc => {
-        // *******************send a private message *********************** //
+                    // *******************send a private message *********************** //
                     socket.to(doc.data().socket).emit('message', {
                         message: `${data.message}`,
                         fromName: `${data.sender}`,
                         fromProfile: `${data.senderProfile}`,
                         to: `${data.room}`,
-                        date: `${moment().format('LT')}`
+                        time: `${moment().format('LT')}`
                     });
 
-       // ******************* messages's storage ************************ //
+                    // ******************* messages's storage ************************ //
                     mongodb.collection("messages").insertOne({
                         message: `${data.message}`,
                         fromName: `${data.sender}`,
@@ -480,11 +483,12 @@ io.on('connection', (socket) => {
             }
         }
         userProfile();
-    })
+    });
     socket.on('user-chat', data => {
         // console.log(data);
         socket.emit('user-chat', data);
-    })
+    });
+
 });
 
 

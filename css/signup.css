@@ -90,18 +90,32 @@ h3{
 
 @media(max-width:414px){
     #facebookLogin{
-        margin-left: 150px;
+        margin-left: 160px;
+    }
+    h3{
+        margin-top: -2em;
+        font-size: 20px;
+    }
+    #signup{
+        margin:0px 150px 0px 170px;
     }
 }
+
+
 @media(min-width:360px){
     .fbContainer{
-        height: 320px;
+        height: 230px;
     }
     .form{
 
         height: 370px;
     }
+    #signup{
+        margin:0px 150px 0px 150px;
+    }
 }
+
+
 @media(min-width:768px){
     .password,.userName{
         margin-top: 20px;
@@ -159,6 +173,7 @@ h3{
     border-radius: 5px;
     cursor: pointer;
     font-family: sans-serif;
+    width: 12em;
 }
 .form{
 
@@ -230,7 +245,7 @@ h3{
 
 @media(min-width:1024px){
     #signup{
-        margin:20px 150px 0px 390px;
+        margin:20px 150px 0px 420px;
         display: block;
         block-size: 30px;
         width: 80px;
@@ -240,6 +255,7 @@ h3{
         border-radius: 5px;
         cursor: pointer;
         font-family: sans-serif;
+        width: 12em;
     }
 
     h3{
@@ -348,6 +364,52 @@ h3{
                 } 
                 
                 }
+                @media(min-width:1760px){
+                    .password,.userName{
+                        margin-top: 20px;
+                        display:grid;
+                        grid-template-columns: 1fr 2fr;
+                        margin: 20px 600px 0px 500px;
+                        color: white;
+                        font-family: 'Poiret One', sans-serif;
+                }
+                    #signup{
+                        margin:20px 150px 0px 780px;
+                        display: block;
+                        block-size: 30px;
+                        width: 80px;
+                        background: white;
+                        border: none;
+                        color: rgb(0, 0, 20);
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-family: sans-serif;
+                        width: 12em;
+                    }
+                    .form{
+    
+                        height: 400px;
+                    
+                    }
+                
+                    h3{
+                        margin-top: 0em;
+                        font-size: 35px;
+                    }
+                    #facebookLogin{
+                        margin-top: 5em;
+                        display: block;
+                        block-size: 30px;
+                        width: 100px;
+                        margin-left: 830px;
+                        background: white;
+                        border: none;
+                        border-radius: 5px;
+                        color: rgb(0, 0, 20);
+                        cursor: pointer;
+                    } 
+                    
+                    } 
                 
             
         
