@@ -18,7 +18,6 @@ fetch('../all/users')
     })
     .then(data => {
         // console.log(data);
-
         const navbarImage = document.querySelector('.chatProfile');
         const deleteProfile = navbarImage.src;
         const ddeleteUSerName = navbarImage.nextSibling.firstChild.data;
@@ -31,8 +30,9 @@ fetch('../all/users')
                         const userDeleted = data.splice(i, 1);
                         i--;
                         // console.log(userDeleted);
-                        // console.log(data);
+                        console.log(data);
                         data.map(user => {
+                            
                             const chatUserDiv = document.querySelector('.chatUsers');
                             // const userChat = `<div class="userChatDiv"><img src="${user.defaultProfile}" alt="profile" class="userChatProfile"> ${user.data.name}</div><hr>`;
                             const div = document.createElement('div');
@@ -46,7 +46,7 @@ fetch('../all/users')
                             followButton.innerHTML = "Follow";
                             followButton.classList = "followButton";
                             para.classList = 'username';
-                            para.innerHTML = user.data.name;
+                            para.innerHTML = `${user.data.name}`;
                             const hr = document.createElement('hr');
                             hr.style.border = "1px solid rgb(0,0,20)";
                             hr.classList = "hr";

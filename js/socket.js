@@ -24,7 +24,7 @@ const userSenderProfileUrl = userSenderProfile.src;
 // console.log(document.querySelector('.userName'));
 
 // ******************************************* update user sockett ID **************************************//
-const socket = io('http://localhost:8000');
+const socket = io('/');
 socket.on('connection', () => {
     fetch('../update/socket', {
         method: "POST",

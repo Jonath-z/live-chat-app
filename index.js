@@ -65,9 +65,7 @@ app.post('/login/user', (req, res) => {
             snapshot.forEach(doc => {
                 userDoc.doc(doc.id).set({ password: `${req.body.password}` },
                     { merge: true });
-                res.render('chat', {
-                    data: doc.data()
-                });
+                res.redirect('/user/login');
                 // res.redirect('/chat');
             });
         }
