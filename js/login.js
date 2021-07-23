@@ -57,7 +57,7 @@ btn.addEventListener('click', () => {
         });
     }
     getURL();
-    window.open('..//user/login', 'self');
+    window.open('../user/login', 'self');
     passwordInput.value = "";
     userNameInput.value = "";
   }
