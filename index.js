@@ -54,24 +54,24 @@ app.get('/user/login', (req, res) => {
 });
 
 app.post('/login/user', (req, res) => {
-    const userDoc = db.collection('user');
-    // console.log(req.body);
-    async function getUser() {
-        const snapshot = await userDoc.where("data.name", "==", req.body.name).get();
-        if (snapshot.empty) {
-            console.log("no data");
-            res.render('index');
-        } else {
-            snapshot.forEach(doc => {
-                userDoc.doc(doc.id).set({ password: `${req.body.password}` },
-                    { merge: true });
+    // const userDoc = db.collection('user');
+    // // console.log(req.body);
+    // async function getUser() {
+    //     const snapshot = await userDoc.where("data.name", "==", req.body.name).get();
+    //     if (snapshot.empty) {
+    //         console.log("no data");
+    //         res.render('index');
+    //     } else {
+    //         snapshot.forEach(doc => {
+    //             userDoc.doc(doc.id).set({ password: `${req.body.password}` },
+    //                 { merge: true });
                 res.redirect('/user/login');
                 // res.redirect('/chat');
-            });
-        }
-    }
-    getUser();
-    // res.render('chat');
+    //         });
+    //     }
+    // }
+    // getUser();
+    // // res.render('chat');
 });
 
 app.get('/signup', (req, res) => {
@@ -83,16 +83,17 @@ app.post('/signup/user', (req, res) => {
     async function setUser() {
         const UserData = {
             data: req.body.response,
-            defaultProfile: req.body.url
+            defaultProfile: req.body.url,
+            passWord: req.body.password
         }
         db.collection('user').doc(`${req.body.response.id}`).set(UserData);
     }
     setUser();
 });
 
-app.get('/return', (req, res) => {
-    res.redirect('/login');
-})
+// app.get('/return', (req, res) => {
+//     res.redirect('/login');
+// })
 
 app.post('/login', (req, res) => {
     const userDoc = db.collection('user');
