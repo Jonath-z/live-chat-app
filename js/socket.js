@@ -275,7 +275,8 @@ socket.on('message', (data) => {
      
         // ChatContainer.append(messageDiv);
         ChatContainer.appendChild(messageDiv2);
-        window.scrollTo(0,document.body.scrollHeight);
+        window.scrollTo(0, document.body.scrollHeight);
+        window.navigator.vibrate(200);
     }
 
 });

@@ -234,6 +234,25 @@ app.get('/all/user/followers', (req, res) => {
             console.log(err);
         }
         res.send(data);
+        console.log(data);
+    });
+});
+// *************************get all user followers from mongoAtlas to chat page *********************//
+app.get('/all/user/followers/chat', (req, res) => {
+    mongodb.collection("users-followers").find({}).toArray((err, data) => {
+        if (err) {
+            console.log(err);
+        }
+        res.send(data);
+    });
+});
+// *************************get all user followers from mongoAtlas to research *********************//
+app.get('/all/user/followers/research', (req, res) => {
+    mongodb.collection("users-followers").find({}).toArray((err, data) => {
+        if (err) {
+            console.log(err);
+        }
+        res.send(data);
     });
 });
 // ***************************** unfollow user setting ******************************************* //
@@ -313,31 +332,40 @@ app.post('/update/user/profile', (req, res) => {
         }
     );
     // ************** update userProfile in mongodb users-followers's collection (followers case) *********//
-
-            mongodb.collection('users-followers').updateMany(
-                { followerName: `${req.body.userName}` },
-                { $set: { followerProfile: `${req.body.newProfile}` } },
-                function (err, res) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    console.log(res.result.nModified + " documents updated");
-                   
-                }
-            ); 
-   
-    // ************ update userProfile in mongodb users-followers's collection (followed case) **********//
-    mongodb.collection('users-followers').updateMany(
-        { followedName: `${req.body.userName}` },
-        { $set: { followedProfile: `${req.body.newProfile}` } },
-        function (err, res) {
-            if (err) {
-                console.log(err);
-            }
-            console.log(res.result.nModified + " documents updated");
-            mongodb.close();
+    mongodb.collection('users-followers').find({}).toArray((err, data) => {
+        if (err) {
+            console.log(err);
         }
-    );
+        else {
+            if (data.length != 0) {
+                mongodb.collection('users-followers').updateMany(
+                    { followerName: `${req.body.userName}` },
+                    { $set: { followerProfile: `${req.body.newProfile}` } },
+                    function (err, res) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        console.log(res.result.nModified + " documents updated");
+                       
+                    }
+                );
+       
+                // ************ update userProfile in mongodb users-followers's collection (followed case) **********//
+                mongodb.collection('users-followers').updateMany(
+                    { followedName: `${req.body.userName}` },
+                    { $set: { followedProfile: `${req.body.newProfile}` } },
+                    function (err, res) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        console.log(res.result.nModified + " documents updated");
+                        mongodb.close();
+                    }
+                );
+            }
+            console.log('no data');
+        }
+    });
 });
 
 // **************************** update user's name and password *********************************//

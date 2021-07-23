@@ -205,9 +205,11 @@ fetch('../all/users')
             const newButton = document.querySelector('.updateButton');
             const divNewName = document.querySelector('.divNewName');
             const divNewPass = document.querySelector('.divNewpass');
-            if (passwordDiv || userNameDiv || newButton || divNewName || divNewPass) {
+            const deconnectButtonDiv = document.querySelector('.divDeconnect');
+            if (passwordDiv || userNameDiv || newButton || divNewName || divNewPass || deconnectButtonDiv) {
                 passwordDiv.remove();
                 userNameDiv.remove();
+                deconnectButtonDiv.remove();
                 if (newButton) {
                     newButton.remove();
                 }
@@ -217,7 +219,7 @@ fetch('../all/users')
                 }
 
             }
-            fetch('../all/user/followers')
+            fetch('../all/user/followers/chat')
                 .then(res => {
                     return res.json();
                 }).then(data => {
@@ -258,7 +260,7 @@ fetch('../all/users')
                                     const userProfile = user.firstElementChild;
                                     const url = userProfile.getAttribute('src');
                                     async function openChat() {
-                                     await   fetch('../live', {
+                                        await fetch('../live', {
                                             method: "POST",
                                             headers: {
                                                 'content-type': 'application/json',
@@ -294,7 +296,7 @@ fetch('../all/users')
             peopleIcon.style.color = "rgb(0,0,20)";
             profileIcon.style.color = "rgb(0,0,20)";
             chatIcon.style.color = "red";
-        });
+        }, { once: true });
         // ********************************** set profile page's element ******************************************//
         const profileIcon = document.querySelector('.fa-user');
         profileIcon.addEventListener('click', () => {
@@ -338,158 +340,205 @@ fetch('../all/users')
                 // ************************ create node for each user's profile element *******************************//
                 //************************* set each user's profile the page *************************************** */       
                 // navbardiv.style.cursor = "pointer";
+                const nameDiv = document.querySelector('.userNameDiv');
+                const passDiv = document.querySelector('.passworDiv');
+                const buttonDiv = document.querySelector('.divDeconnect');
+                const filInput = document.querySelector('.inputFIle');
+                if (!nameDiv || !passDiv || !buttonDiv || !filInput) {
+                    const div1 = document.createElement('div');
+                    div1.classList = "userNameDiv";
+                    const label = document.createElement('label');
+                    label.classList = "userNamePara";
+                    label.setAttribute('for', 'userName');
+                    label.innerHTML = "Name";
 
-                const div1 = document.createElement('div');
-                div1.classList = "userNameDiv";
-                const label = document.createElement('label');
-                label.classList = "userNamePara";
-                label.setAttribute('for', 'userName');
-                label.innerHTML = "Name";
+                    const inputName = document.createElement('input');
+                    inputName.name = "userName";
+                    inputName.classList = "inputName";
+                    inputName.setAttribute('readonly', 'true');
+                    inputName.value = `${data.data.name}`;
 
-                const inputName = document.createElement('input');
-                inputName.name = "userName";
-                inputName.classList = "inputName";
-                inputName.setAttribute('readonly', 'true');
-                inputName.value = `${data.data.name}`;
-
-                const i = document.createElement('i');
-                i.classList = "fa fa-pencil";
-                i.style.cursor = "pointer";
-                div1.append(label, inputName, i);
+                    const i = document.createElement('i');
+                    i.classList = "fa fa-pencil";
+                    i.style.cursor = "pointer";
+                    div1.append(label, inputName, i);
                 
-                const labelPassword = document.createElement('label');
-                labelPassword.setAttribute('for', 'password');
-                labelPassword.classList = "labelPassword";
-                labelPassword.innerHTML = "Password";
+                    const labelPassword = document.createElement('label');
+                    labelPassword.setAttribute('for', 'password');
+                    labelPassword.classList = "labelPassword";
+                    labelPassword.innerHTML = "Password";
 
-                const div2 = document.createElement('div');
-                div2.classList = "passworDiv";
-                const inputPassword = document.createElement('input');
-                inputPassword.classList = "inputPassword";
-                inputPassword.name = "password";
+                    const div2 = document.createElement('div');
+                    div2.classList = "passworDiv";
+                    const inputPassword = document.createElement('input');
+                    inputPassword.classList = "inputPassword";
+                    inputPassword.name = "password";
 
-                inputPassword.type = "password";
-                inputPassword.value = `${data.password}`;
-                inputPassword.setAttribute('readonly', 'true');
-                div2.append(labelPassword, inputPassword, i);
-                // const userProfileImg = userProfile;
-                const inputFile = document.createElement('input');
-                inputFile.type = "file";
-                inputFile.name = "file";
-                inputFile.hidden = "true";
-                chatUserSection.append(div1, div2, inputFile);
+                    inputPassword.type = "password";
+                    inputPassword.value = `${data.password}`;
+                    inputPassword.setAttribute('readonly', 'true');
+                    div2.append(labelPassword, inputPassword, i);
+                    // const userProfileImg = userProfile;
+                    const inputFile = document.createElement('input');
+                    inputFile.type = "file";
+                    inputFile.name = "file";
+                    inputFile.hidden = "true";
+                    inputFile.classList = "inputFIle";
+                    const div3 = document.createElement('div');
+                    div3.classList = "divDeconnect";
+                    const deconnectButton = document.createElement('button');
+                    deconnectButton.classList = "deconnectButton";
+                    deconnectButton.innerHTML = "log out";
+                    deconnectButton.style.background = "rgb(0,0,20)";
+                    deconnectButton.style.color = "white";
+                    deconnectButton.style.border = "none";
+                    deconnectButton.style.borderRadius = "5px";
+                    deconnectButton.style.marginTop = "30px";
+                    deconnectButton.style.fontFamily = "sans-serif";
+                    deconnectButton.style.width = "10em";
+                    deconnectButton.style.height = "25px";
 
-                // const body = document.getElementsByTagName('body');
-                // body[0].append(navbardiv, div2);
-
-                // ************************** update user Profile *********************************************************//
+                    div3.append(deconnectButton);
+                    div3.style.textAlign = "center";
+                    chatUserSection.append(div1, div2, inputFile, div3);
+                    deconnectButton.addEventListener('click', () => {
+                        if (confirm('Do you want to log out ?')) {
+                            window.open('../', '_self');
+                        }
+                    }, { once: true });
                 
-                // userProfile.style.cursor = "pointer";
-                // const navbardiv = document.querySelector('.chatProfile');
-                // *************************store new profile in firestore ************************************************//
-                const userProfileImg = navbardiv;
-                userProfileImg.onclick = function () {
-                    inputFile.click();
-                }
-                inputFile.onchange = function (event) {
-                    const date = Date.now();
-                    const imageName = `image_${date}`;
-                    const myFile = event.target.files;
-                    // console.log(myFile)
-                    const storageRef = fireStorage.ref(`user-profile-photos/` + imageName);
-                    const uploadTask = storageRef.put(myFile[0]);
-                    uploadTask.on("state_changed", function (snapshot) {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        // prog.innerHTML = progress + "%";
-            
-                    },
-                    
-                        function (err) {
-                            console.log(err)
+                    // const body = document.getElementsByTagName('body');
+                    // body[0].append(navbardiv, div2);
+
+                    // ************************** update user Profile *********************************************************//
+                
+                    // userProfile.style.cursor = "pointer";
+                    // const navbardiv = document.querySelector('.chatProfile');
+                    // *************************store new profile in firestore ************************************************//
+                    const userProfileImg = navbardiv;
+                    userProfileImg.onclick = function () {
+                        inputFile.click();
+                    }
+                    inputFile.onchange = function (event) {
+                        const date = Date.now();
+                        const imageName = `image_${date}`;
+                        const myFile = event.target.files;
+                        // console.log(myFile)
+                        const storageRef = fireStorage.ref(`user-profile-photos/` + imageName);
+                        const uploadTask = storageRef.put(myFile[0]);
+                        uploadTask.on("state_changed", function (snapshot) {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            // prog.innerHTML = progress + "%";
+                            // console.log(progress);
+                          
+                            const progressBar = document.getElementById('progressBar');
+                            const value =  progressBar.value = `${progress}`;
+                            progressBar.hidden = false;
+                            const max = progressBar.max;
+                            if (`${value}` === `${max}`) {
+                                alert('update complete');
+                                progressBar.hidden = true;
+                            }
+                        
+                            
                         },
+                    
+                            function (err) {
+                                console.log(err)
+                            },
        
-                        function () {
-                            uploadTask.snapshot.ref.getDownloadURL().then(function (url) {
-                                console.log(url);
-                                fetch('../update/user/profile', {
+                            function () {
+                                uploadTask.snapshot.ref.getDownloadURL().then(function (url) {
+                                    console.log(url);
+                                    fetch('../update/user/profile', {
+                                        method: "POST",
+                                        headers: {
+                                            "accept": "*/*",
+                                            "content-type": "application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            newProfile: `${url}`,
+                                            userName: `${inputName.value}`,
+                                            userPassword: `${inputPassword.value}`
+                                        })
+                                    });
+                                    
+                                });
+                            },
+                        )
+                    }
+                
+                    //******************* update name and password ****************************/ 
+                    i.onclick = function () {
+                        // ********input new password*************//
+                        const newNameDiv = document.querySelector('.divNewName');
+                        const newPassDiv = document.querySelector('.divNewpass');
+                        const newButtonDiv = document.querySelector('.divButton');
+                        // ************* prevent double click******************//
+                        if (!newNameDiv || !newPassDiv || !newButtonDiv) {
+                            const divPass = document.createElement('div');
+                            divPass.classList = "divNewpass";
+                            const labelPass = document.createElement('label');
+                            labelPass.setAttribute('for', 'password');
+                            labelPass.classList = "labelPassword";
+                            labelPass.innerHTML = "Password";
+                            const inputNewPassword = document.createElement('input');
+                            inputNewPassword.classList = "inputNewPassword";
+                            inputNewPassword.name = "password";
+                            inputNewPassword.type = "password";
+                            inputNewPassword.value = `${data.password}`;
+                            divPass.append(labelPass, inputNewPassword);
+                            // *********input new name**************//
+                            const divName = document.createElement('div');
+                            divName.classList = "divNewName";
+                            const labelName = document.createElement('label');
+                            labelName.classList = "userNamePara";
+                            labelName.setAttribute('for', 'userName');
+                            labelName.innerHTML = "Name";
+                            const inputNewName = document.createElement('input');
+                            inputNewName.name = "userName";
+                            inputNewName.classList = "inputNewName";
+                            inputNewName.value = `${data.data.name}`;
+                            divName.append(labelName, inputNewName);
+                            // ***********update button*************//
+                            const divButton = document.createElement('div');
+                            divButton.classList = "divButton";
+                            const newButton = document.createElement('button');
+                            newButton.classList = "updateButton";
+                            newButton.innerHTML = "Update";
+                            divButton.append(newButton);
+                            divPass.style.textAlign = "center";
+                            chatUserSection.append(divName, divPass, divButton);
+                            // const updateButton = document.querySelector('.updateButton');
+                    
+                            newButton.addEventListener("click", function () {
+                                const newPasswordInput = document.querySelector('.inputNewPassword');
+                                const newPassword = newPasswordInput.value;
+                                const newNameInput = document.querySelector('.inputNewName');
+                                const newName = newNameInput.value;
+                                // ************* fetch for updating user's name and password************//
+                                fetch('../update/user/name/password', {
                                     method: "POST",
                                     headers: {
                                         "accept": "*/*",
                                         "content-type": "application/json"
                                     },
                                     body: JSON.stringify({
-                                        newProfile: `${url}`,
-                                        userName: `${inputName.value}`,
-                                        userPassword: `${inputPassword.value}`
+                                        formerName: `${data.data.name}`,
+                                        formerPassword: `${data.password}`,
+                                        newName: `${newName}`,
+                                        newPassword: `${newPassword}`
                                     })
                                 });
-                            });
-                        },
-                    )
-                }
-                //******************* update name and password ****************************/ 
-                i.onclick = function () {
-                    // ********input new password*************//
-                    const divPass = document.createElement('div');
-                    divPass.classList = "divNewpass";
-                    const labelPass = document.createElement('label');
-                    labelPass.setAttribute('for', 'password');
-                    labelPass.classList = "labelPassword";
-                    labelPass.innerHTML = "New Password";
-                    const inputNewPassword = document.createElement('input');
-                    inputNewPassword.classList = "inputNewPassword";
-                    inputNewPassword.name = "password";
-                    inputNewPassword.type = "password";
-                    inputNewPassword.value = `${data.password}`;
-                    divPass.append(labelPass, inputNewPassword);
-                    // *********input new name**************//
-                    const divName = document.createElement('div');
-                    divName.classList = "divNewName";
-                    const labelName = document.createElement('label');
-                    labelName.classList = "userNamePara";
-                    labelName.setAttribute('for', 'userName');
-                    labelName.innerHTML = "New Name";
-                    const inputNewName = document.createElement('input');
-                    inputNewName.name = "userName";
-                    inputNewName.classList = "inputNewName";
-                    inputNewName.value = `${data.data.name}`;
-                    divName.append(labelName, inputNewName);
-                    // ***********update button*************//
-                    const divButton = document.createElement('div');
-                    divButton.classList = "divButton";
-                    const newButton = document.createElement('button');
-                    newButton.classList = "updateButton";
-                    newButton.innerHTML = "Update";
-                    divButton.append(newButton);
-                    chatUserSection.append(divName, divPass, divButton);
-                    // const updateButton = document.querySelector('.updateButton');
-                    
-                    newButton.addEventListener("click", function () {
-                        const newPasswordInput = document.querySelector('.inputNewPassword');
-                        const newPassword = newPasswordInput.value;
-                        const newNameInput = document.querySelector('.inputNewName');
-                        const newName = newNameInput.value;
-                        // ************* fetch for updating user's name and password************//
-                        fetch('../update/user/name/password', {
-                            method: "POST",
-                            headers: {
-                                "accept": "*/*",
-                                "content-type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                formerName: `${data.data.name}`,
-                                formerPassword: `${data.password}`,
-                                newName: `${newName}`,
-                                newPassword: `${newPassword}`
-                            })
-                        });
                         
-                    });
+                            });
+                        }
+                    }
                 }
-
             }).catch(err => console.log(err));
-   
+        
         });
+    
         //************************************* search bar people **************************************************************************************//
         const searchBar = document.getElementById('searchBar');
         searchBar.value = "";
@@ -550,7 +599,7 @@ fetch('../all/users')
 
 
                     //***************************** set and deplay user's following state ***************************************//
-                    fetch('../all/user/followers')
+                    fetch('../all/user/followers/research')
                         .then(res => {
                             return res.json();
                         })
@@ -576,32 +625,32 @@ fetch('../all/users')
                         });
 
 
-                        // const followButton = document.createElement('button');
-                        followButton.innerHTML = "Follow";
-                        followButton.classList = "followButton";
-                        para.classList = 'username';
-                        para.innerHTML = user.data.name;
-                        const hr = document.createElement('hr');
-                        hr.style.border = "1px solid rgb(0,0,20)";
-                        hr.classList = "hr";
-                        // const divButton = document.createElement('div');
-                        // divButton.classList = "divButton";
-                        // divButton.append(followButton);
-                        div.style.display = "grid";
-                        div.style.gridTemplateColumns = "1fr 2fr 1fr";
-                        followButton.style.border = "none"
-                        followButton.style.height = "25px"
-                        followButton.style.borderRadius = "5px";
-                        followButton.style.marginRight = "20px";
-                        followButton.style.marginTop = "20px";
-                        followButton.style.fontFamily = "sans-serif";
-                        img.style.marginLeft = "20px";
-                        para.style.fontFamily = "sans-serif";
-                        hr.style.marginLeft = "5em";
-                        hr.style.marginRight = "1em";
-                        hr.style.opacity = "0.5";
-                        div.append(img, para, followButton);
-                        chatUserDiv.append(div, hr);
+                    // const followButton = document.createElement('button');
+                    followButton.innerHTML = "Follow";
+                    followButton.classList = "followButton";
+                    para.classList = 'username';
+                    para.innerHTML = user.data.name;
+                    const hr = document.createElement('hr');
+                    hr.style.border = "1px solid rgb(0,0,20)";
+                    hr.classList = "hr";
+                    // const divButton = document.createElement('div');
+                    // divButton.classList = "divButton";
+                    // divButton.append(followButton);
+                    div.style.display = "grid";
+                    div.style.gridTemplateColumns = "1fr 2fr 1fr";
+                    followButton.style.border = "none"
+                    followButton.style.height = "25px"
+                    followButton.style.borderRadius = "5px";
+                    followButton.style.marginRight = "20px";
+                    followButton.style.marginTop = "20px";
+                    followButton.style.fontFamily = "sans-serif";
+                    img.style.marginLeft = "20px";
+                    para.style.fontFamily = "sans-serif";
+                    hr.style.marginLeft = "5em";
+                    hr.style.marginRight = "1em";
+                    hr.style.opacity = "0.5";
+                    div.append(img, para, followButton);
+                    chatUserDiv.append(div, hr);
                 });
                 //************************** Open user discution *********************************/
                 // const navbardiv = document.querySelector('.chatProfile');
