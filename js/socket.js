@@ -92,6 +92,7 @@ fetch('../user/message')
 
                 messagePara.style.marginLeft = "5px";
                 div.style.overflowWrap = "anywhere";
+                div.style.paddingBottom = "20px";
                 div.append(messagePara);
                 messageDiv.append(img, div);
                 const span = document.querySelectorAll('.span');
@@ -101,6 +102,7 @@ fetch('../user/message')
                 })
 
                 ChatContainer.append(messageDiv);
+                window.scrollTo(0, document.body.scrollHeight);
             };
 
             if (`${message.fromName}` === `${usersSender}` && `${message.to}` === `${userReceiver}`) {
@@ -128,6 +130,7 @@ fetch('../user/message')
                 messagePara2.style.marginRight = "10px";
                 messageDiv2.appendChild(messagePara2);
                 messageDiv2.style.overflowWrap = "anywhere";
+                messageDiv2.paddingBottom = "30px";
                 const span = document.querySelectorAll('.span');
                 span.forEach(time => {
                     time.style.fontSize = "10px";
@@ -139,23 +142,24 @@ fetch('../user/message')
                 })
                 ChatContainer.style.flexDirection = "column";
                 ChatContainer.append(messageDiv2);
+                window.scrollTo(0, document.body.scrollHeight);
 
-                messageDiv2.addEventListener('click', () => {
-                    console.log(messageDiv2);
-                    // confirm(`Delete the message`);
-                    if (confirm(`Delete the message`)) {
-                        const message = messageDiv2.childNodes[0].innerHTML;
-                        console.log(message);
-                        socket.emit('delete-message', {
-                            message: `${message}`,
-                            sender: `${usersSender}`,
-                            receiver: `${userReceiver}`
-                        });
-                        message = "message deleted";
+                // messageDiv2.addEventListener('click', () => {
+                //     console.log(messageDiv2);
+                //     // confirm(`Delete the message`);
+                //     if (confirm(`Delete the message`)) {
+                //         const message = messageDiv2.childNodes[0].innerHTML;
+                //         console.log(message);
+                //         socket.emit('delete-message', {
+                //             message: `${message}`,
+                //             sender: `${usersSender}`,
+                //             receiver: `${userReceiver}`
+                //         });
+                //         message = "message deleted";
 
-                    }
+                //     }
                     
-                });
+                // });
             }
         });
 
@@ -214,6 +218,7 @@ sendButton.addEventListener('click', () => {
         messageDiv3.style.overflow = "hidden";
         messagePara3.style.float = "right";
         messagePara3.style.marginRight = "10px";
+        messageDiv3.style.paddingBottom = "30px";
         const span = document.querySelectorAll('.span');
         messageDiv3.appendChild(messagePara3);
         messageDiv3.style.overflowWrap = "anywhere";
@@ -267,6 +272,7 @@ socket.on('message', (data) => {
         div.append(para);
         
         messageDiv2.append(img, div);
+        messageDiv2.style.paddingBottom = "30px";
         const span = document.querySelectorAll('.span');
         span.forEach(time => {
             time.style.fontSize = "10px";
