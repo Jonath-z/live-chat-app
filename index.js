@@ -84,7 +84,7 @@ app.post('/signup/user', (req, res) => {
         const UserData = {
             data: req.body.response,
             defaultProfile: req.body.url,
-            passWord: req.body.password
+            password: req.body.password
         }
         db.collection('user').doc(`${req.body.response.id}`).set(UserData);
     }
