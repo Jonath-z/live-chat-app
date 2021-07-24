@@ -92,7 +92,7 @@ fetch('../user/message')
 
                 messagePara.style.marginLeft = "5px";
                 div.style.overflowWrap = "anywhere";
-                div.style.paddingBottom = "20px";
+                // div.style.paddingBottom = "50px";
                 div.append(messagePara);
                 messageDiv.append(img, div);
                 const span = document.querySelectorAll('.span');
@@ -102,6 +102,7 @@ fetch('../user/message')
                 })
 
                 ChatContainer.append(messageDiv);
+                ChatContainer.style.paddingBottom = "50px";
                 window.scrollTo(0, document.body.scrollHeight);
             };
 
@@ -130,7 +131,7 @@ fetch('../user/message')
                 messagePara2.style.marginRight = "10px";
                 messageDiv2.appendChild(messagePara2);
                 messageDiv2.style.overflowWrap = "anywhere";
-                messageDiv2.paddingBottom = "30px";
+                // messageDiv2.paddingBottom = "50px";
                 const span = document.querySelectorAll('.span');
                 span.forEach(time => {
                     time.style.fontSize = "10px";
@@ -142,6 +143,7 @@ fetch('../user/message')
                 })
                 ChatContainer.style.flexDirection = "column";
                 ChatContainer.append(messageDiv2);
+                ChatContainer.style.paddingBottom = "50px";
                 window.scrollTo(0, document.body.scrollHeight);
 
                 // messageDiv2.addEventListener('click', () => {
@@ -218,11 +220,12 @@ sendButton.addEventListener('click', () => {
         messageDiv3.style.overflow = "hidden";
         messagePara3.style.float = "right";
         messagePara3.style.marginRight = "10px";
-        messageDiv3.style.paddingBottom = "30px";
+        // messageDiv3.style.paddingBottom = "50px";
         const span = document.querySelectorAll('.span');
         messageDiv3.appendChild(messagePara3);
         messageDiv3.style.overflowWrap = "anywhere";
         ChatContainer.appendChild(messageDiv3);
+        ChatContainer.style.paddingBottom = "50px";
         span.forEach(time => {
             time.style.fontSize = "10px";
             // console.log(time);
@@ -272,7 +275,7 @@ socket.on('message', (data) => {
         div.append(para);
         
         messageDiv2.append(img, div);
-        messageDiv2.style.paddingBottom = "30px";
+        // messageDiv2.style.paddingBottom = "50px";
         const span = document.querySelectorAll('.span');
         span.forEach(time => {
             time.style.fontSize = "10px";
@@ -281,6 +284,7 @@ socket.on('message', (data) => {
      
         // ChatContainer.append(messageDiv);
         ChatContainer.appendChild(messageDiv2);
+        ChatContainer.style.paddingBottom = "50px";
         window.scrollTo(0, document.body.scrollHeight);
         window.navigator.vibrate(200);
     }

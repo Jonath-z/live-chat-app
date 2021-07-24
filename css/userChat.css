@@ -67,6 +67,7 @@ header{
     background: white;
     overflow-y: auto;
     margin-top: -16px;
+    bottom: 50px;
     /* display: flex;
     flex-direction: ; */
     
