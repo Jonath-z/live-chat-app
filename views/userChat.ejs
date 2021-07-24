@@ -16,18 +16,26 @@
       <section class="userInformation">
         <%- `<div class="receiver"><img src="${url}" alt="profile" class="userChatProfile userReceiverProfile"><p class="userName">${receiver}</p></div>` %>
       </section>
-      <section class="chatSection"></section>
+      <section class="chatSection">
+
+        <footer>
+          <div class="messageInput"> 
+            <textarea name="message" placeholder="message..." id="messageInput"></textarea><button type="submit" class="send"><i class="fa fa-paper-plane" style="font-size:24px"></i></button>
+          </div>
+        </footer>
+      </section>
 
 
         <div class="alertSection"></div>
 
 
-    </section>
-  <footer>
+    <!-- </section> -->
+  <!-- <footer>
     <div class="messageInput"> 
       <textarea name="message" placeholder="message..." id="messageInput"></textarea><button type="submit" class="send"><i class="fa fa-paper-plane" style="font-size:24px"></i></button>
     </div>
   </footer>
+ </section> -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="/statics/socket.js"></script>

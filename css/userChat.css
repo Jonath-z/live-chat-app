@@ -20,6 +20,8 @@ html,body{
     background: white;
     top:65px;
     margin-bottom: 50px;
+    /* overflow: auto; */
+    position: absolute;
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     height: 100vh;
@@ -59,7 +61,8 @@ header{
 .chatSection{
     margin-bottom: 50px;
     background: white;
-    overflow: auto;
+    overflow-y: auto;
+   
     /* display: flex;
     flex-direction: ; */
     
@@ -135,4 +138,15 @@ grid-template-columns: 3fr 1fr;
         header{
             width: 50%;
         }
+}
+@media(min-height:1024px){
+    .chatSection{
+        margin-bottom: 55px;
+        background: white;
+        overflow-y: auto;
+       
+        /* display: flex;
+        flex-direction: ; */
+        
+    }
 }
