@@ -30,7 +30,7 @@ fetch('../all/users')
                         const userDeleted = data.splice(i, 1);
                         i--;
                         // console.log(userDeleted);
-                        console.log(data);
+                        // console.log(data);
                         data.map(user => {
                             
                             const chatUserDiv = document.querySelector('.chatUsers');
