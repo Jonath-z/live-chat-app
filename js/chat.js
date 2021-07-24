@@ -283,7 +283,7 @@ fetch('../all/users')
                                         });
                                     }
                                     openChat();
-                                });
+                                }, { once: true });
                             });
                         }
                     });
