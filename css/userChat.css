@@ -42,6 +42,7 @@ p{
 }
 .userName{
     font-family: sans-serif;
+    padding-bottom: 30px;
 }
 header{
     display: grid;
@@ -57,12 +58,15 @@ header{
 }
 .userInformation{
     margin-top: 80px;
+    background: white;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
 }
 .chatSection{
     margin-bottom: 50px;
     background: white;
     overflow-y: auto;
-   
+    margin-top: -16px;
     /* display: flex;
     flex-direction: ; */
     
