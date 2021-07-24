@@ -19,7 +19,7 @@ html,body{
     width: 100%;
     background: white;
     top:65px;
-    margin-bottom: 28px;
+    margin-bottom: 50px;
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     height: 100vh;
@@ -59,6 +59,7 @@ header{
 .chatSection{
     margin-bottom: 50px;
     background: white;
+    overflow: auto;
     /* display: flex;
     flex-direction: ; */
     
