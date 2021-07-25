@@ -235,7 +235,7 @@ app.get('/all/user/followers', (req, res) => {
             console.log(err);
         }
         res.send(data);
-        console.log(data);
+        // console.log(data);
     });
 });
 // *************************get all user followers from mongoAtlas to chat page *********************//

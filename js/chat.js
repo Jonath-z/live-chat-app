@@ -165,7 +165,7 @@ fetch('../all/users')
                                 div.childNodes[2].innerHTML = "Unfollow";
                                 div.childNodes[2].style.background = "rgb(0,0,20)";
                                 div.childNodes[2].style.color = "white";
-                            }
+                            } 
                         }
                     });
                 });

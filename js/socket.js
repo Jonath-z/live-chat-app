@@ -177,7 +177,7 @@ const messageInput = document.getElementById('messageInput');
 messageInput.addEventListener('onChange', (event) => {
     if (event) {
         const target = event.target ? event.target : event;
-        console.log(target);
+        // console.log(target)
         target.style.height = "45px";
         target.style.height = `${target.scrollHeight}px`;
     }

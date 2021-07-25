@@ -5,6 +5,8 @@ html,body{
     position: absolute;
     width: 100%;
     top: 0;
+    overflow: auto;
+    padding-bottom: 20px;
 }
 
 .chatProfile{
@@ -66,7 +68,15 @@ nav{
     text-align: center;
     /* margin-bottom: 5px; */
     cursor: pointer;
-    background: white;
+    background:rgb(235, 235, 235);
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+}
+i{
+    margin-top: 5px;
+}
+.userChatDiv:active{
+    background:rgb(235, 235, 235);
 }
 span{
     color: rgb(0,0,20);
