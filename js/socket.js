@@ -1,4 +1,5 @@
 
+
 // ************* firebase realtime database init ******************//
 const firebaseConfig = {
     apiKey: "AIzaSyBFJCVc3WVg-AzuZUjV1nSd3kHqNchRZgM",
@@ -169,20 +170,20 @@ fetch('../user/message')
     
 
 
+
+// ****************auto size input******************************//
+
+// messageInput.addEventListener('onChange', (event) => {
+//     if (event) {
+//         const target = event.target ? event.target : event;
+//         // console.log(target)
+//         target.style.height = "45px";
+//         target.style.height = `${target.scrollHeight}px`;
+//     }
+// });
 // ************************************ emit message ***************************************************//
 const sendButton = document.querySelector('.send');
 const messageInput = document.getElementById('messageInput');
-// ****************auto size input******************************//
-
-messageInput.addEventListener('onChange', (event) => {
-    if (event) {
-        const target = event.target ? event.target : event;
-        // console.log(target)
-        target.style.height = "45px";
-        target.style.height = `${target.scrollHeight}px`;
-    }
-});
-
 sendButton.addEventListener('click', () => {
     const message = messageInput.value;
     const room = `${userReceiver}`;
@@ -197,7 +198,7 @@ sendButton.addEventListener('click', () => {
         const hours = new Date().toLocaleString("en-US", {
             hour: 'numeric',
             minute: 'numeric',
-            hour12:true
+            hour12: true
         });
     
         // console.log(hours);
@@ -231,8 +232,16 @@ sendButton.addEventListener('click', () => {
             // console.log(time);
         })
 
+       
+        socket.emit('new_notification', {
+            message: `${message}`,
+            title: `New message from ${usersSender}`,
+            icon: `icon`,
+        });
+        
+        
         messageInput.value = '';
-        window.scrollTo(0,document.body.scrollHeight);
+        window.scrollTo(0, document.body.scrollHeight);
     }
 });
 
@@ -291,6 +300,93 @@ socket.on('message', (data) => {
 
 });
 
+
+socket.on('show_notification', function (data) {
+    // showDesktopNotification(data.title, data.message, data.icon);
+    console.log(data);
+    
+});
+// /**
+//  * Set Notification Request
+//  * @type type
+//  */
+// function setNotification() {
+//     showDesktopNotification('Lokesh', 'Desktop Notification..!', 'icon');
+//     sendNodeNotification('Lokesh', 'Browser Notification..!', 'icon');
+// }
+// /**
+//  * Check Browser Notification Permission
+//  * @type window.Notification|Window.Notification|window.webkitNotification|Window.webkitNotification|Window.mozNotification|window.mozNotification
+//  */
+var Notification = window.Notification || window.mozNotification || window.webkitNotification;
+Notification.requestPermission(function (permission) {
+    console.log(permission);
+});
+// /**
+//  * Request Browser Notification Permission 
+//  * @type Arguments
+//  */
+function requestNotificationPermissions() {
+    if (Notification.permission !== 'denied') {
+        Notification.requestPermission(function (permission) {
+            console.log(permission);
+        });
+    }
+}
+// /**
+//  * Show Desktop Notification If Notification Allow
+//  * @param {type} title
+//  * @param {type} message
+//  * @param {type} icon
+//  * @returns {undefined}
+//  */
+function showDesktopNotification(message, body, icon, sound, timeout) {
+    if (!timeout) {
+        timeout = 4000;
+    }
+    requestNotificationPermissions();
+    var instance = new Notification(
+            message, {
+                body: body,
+                icon: icon,
+                sound: sound
+            }
+    );
+    instance.onclick = function () {
+        // Something to do
+        console.log("notification");
+    };
+    instance.onerror = function () {
+        // Something to do
+        console.log(Error);
+    };
+    instance.onshow = function () {
+        // Something to do
+    };
+    instance.onclose = function () {
+        // Something to do
+    };
+    if (sound)
+    {
+        instance.sound;
+    }
+    setTimeout(instance.close.bind(instance), timeout);
+    return false;
+}
+// /**
+//  * Send Node Notification
+//  * @param {type} title
+//  * @param {type} message
+//  * @param {type} icon
+//  * @returns {undefined}
+//  */
+// function sendNodeNotification(title, message, icon) {
+//     socket.emit('new_notification', {
+//         message: message,
+//         title: title,
+//         icon: icon,
+//     });
+// }
 
  // ************************************* fa fa-arrow-left event ***************************************//
 const arrowLeft = document.querySelector('.fa-arrow-left');

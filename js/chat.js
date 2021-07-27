@@ -288,10 +288,10 @@ fetch('../all/users')
                         }
                     });
                     
-                    console.log(data);
+                    // console.log(data);
                 });
 
-            console.log(userProfile, userName);
+            // console.log(userProfile, userName);
             const peopleIcon = document.querySelector('.fa-users');
             peopleIcon.style.color = "rgb(0,0,20)";
             profileIcon.style.color = "rgb(0,0,20)";

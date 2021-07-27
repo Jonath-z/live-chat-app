@@ -480,7 +480,15 @@ io.on('connection', (socket) => {
                         to: `${data.room}`,
                         time: `${moment().format('LT')}`
                     });
-
+                    // ******************* send a private notification ******************//
+                    socket.on( 'new_notification', function( data ) {
+                        console.log(data.title,data.message);
+                        socket.to(doc.data().socket).emit( 'show_notification', { 
+                          title: data.title, 
+                          message: data.message, 
+                          icon: data.icon, 
+                        });
+                      });
                     // ******************* messages's storage ************************ //
                     mongodb.collection("messages").insertOne({
                         message: `${data.message}`,
