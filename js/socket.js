@@ -1,20 +1,4 @@
 
-
-// ************* firebase realtime database init ******************//
-const firebaseConfig = {
-    apiKey: "AIzaSyBFJCVc3WVg-AzuZUjV1nSd3kHqNchRZgM",
-    authDomain: "chatapp-318511.firebaseapp.com",
-    databaseURL: "https://chatapp-318511-default-rtdb.firebaseio.com",
-    projectId: "chatapp-318511",
-    storageBucket: "chatapp-318511.appspot.com",
-    messagingSenderId: "968379108682",
-    appId: "1:968379108682:web:f8ea4a7fe25bda530185b3"
-  };
-  // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-
 //************************************** set receiver && ssender ***************************************//
 const userReceiver = document.querySelector('.userName').textContent;
 const userReceiverProfile = document.querySelector('.userReceiverProfile');
@@ -103,7 +87,7 @@ fetch('../user/message')
                 })
 
                 ChatContainer.append(messageDiv);
-                ChatContainer.style.paddingBottom = "50px";
+                ChatContainer.style.paddingBottom = "55px";
                 window.scrollTo(0, document.body.scrollHeight);
             };
 
@@ -144,7 +128,7 @@ fetch('../user/message')
                 })
                 ChatContainer.style.flexDirection = "column";
                 ChatContainer.append(messageDiv2);
-                ChatContainer.style.paddingBottom = "50px";
+                ChatContainer.style.paddingBottom = "55px";
                 window.scrollTo(0, document.body.scrollHeight);
 
                 // messageDiv2.addEventListener('click', () => {
@@ -226,18 +210,57 @@ sendButton.addEventListener('click', () => {
         messageDiv3.appendChild(messagePara3);
         messageDiv3.style.overflowWrap = "anywhere";
         ChatContainer.appendChild(messageDiv3);
-        ChatContainer.style.paddingBottom = "50px";
+        ChatContainer.style.paddingBottom = "55px";
         span.forEach(time => {
             time.style.fontSize = "10px";
             // console.log(time);
-        })
-
-       
-        socket.emit('new_notification', {
-            message: `${message}`,
-            title: `New message from ${usersSender}`,
-            icon: `icon`,
         });
+
+        // // ***********************send notification ****************************************************************//
+        // const publicVapidKey = 'BB0WyTk1MsxWf49VE3QkDImOQ6JPMP4gCC-7XpYjHILgW5alnlpQQKKbzj3RHYs_emPa2YJxSGYJVlIgwZwraXs';
+
+        // function urlBase64ToUint8Array(base64String) {
+        //     const padding = "=".repeat((4 - base64String.length % 4) % 4);
+        //     const base64 = (base64String + padding)
+        //         .replace(/\-/g, "+")
+        //         .replace(/_/g, "/");
+  
+        //     const rawData = window.atob(base64);
+        //     const outputArray = new Uint8Array(rawData.length);
+  
+        //     for (let i = 0; i < rawData.length; ++i) {
+        //         outputArray[i] = rawData.charCodeAt(i);
+        //     }
+        //     return outputArray;
+        // }
+        // // ******************************check if the service worker is working on the current browser***********************//
+        // if ('serviceWorker' in navigator) {
+        //     send().catch(err => console.error(err));
+        // }
+        // //****************register the service worker, register our push api, send the notification*****************************//
+        // async function send() {
+        //     //register service worker
+        //     const register = await navigator.serviceWorker.register('/publics/worker.js', {
+        //         scope: 'publics/'
+        //     });
+
+        //     //register push
+        //     const subscription = await register.pushManager.subscribe({
+        //         userVisibleOnly: true,
+
+        //         //public vapid key
+        //         applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+        //     });
+        //     // console.log(subscription);
+        //     //Send push notification
+        //     await fetch("/subscribe", {
+        //         method: "POST",
+        //         body: JSON.stringify(subscription),
+        //         headers: {
+        //             "Content-Type": "application/json"
+        //         }
+        //     });
+        // }
         
         
         messageInput.value = '';
@@ -293,104 +316,10 @@ socket.on('message', (data) => {
      
         // ChatContainer.append(messageDiv);
         ChatContainer.appendChild(messageDiv2);
-        ChatContainer.style.paddingBottom = "50px";
+        ChatContainer.style.paddingBottom = "55px";
         window.scrollTo(0, document.body.scrollHeight);
         window.navigator.vibrate(200);
     }
 
-});
-
-
-socket.on('show_notification', function (data) {
-    // showDesktopNotification(data.title, data.message, data.icon);
-    console.log(data);
-    
-});
-// /**
-//  * Set Notification Request
-//  * @type type
-//  */
-// function setNotification() {
-//     showDesktopNotification('Lokesh', 'Desktop Notification..!', 'icon');
-//     sendNodeNotification('Lokesh', 'Browser Notification..!', 'icon');
-// }
-// /**
-//  * Check Browser Notification Permission
-//  * @type window.Notification|Window.Notification|window.webkitNotification|Window.webkitNotification|Window.mozNotification|window.mozNotification
-//  */
-var Notification = window.Notification || window.mozNotification || window.webkitNotification;
-Notification.requestPermission(function (permission) {
-    console.log(permission);
-});
-// /**
-//  * Request Browser Notification Permission 
-//  * @type Arguments
-//  */
-function requestNotificationPermissions() {
-    if (Notification.permission !== 'denied') {
-        Notification.requestPermission(function (permission) {
-            console.log(permission);
-        });
-    }
-}
-// /**
-//  * Show Desktop Notification If Notification Allow
-//  * @param {type} title
-//  * @param {type} message
-//  * @param {type} icon
-//  * @returns {undefined}
-//  */
-function showDesktopNotification(message, body, icon, sound, timeout) {
-    if (!timeout) {
-        timeout = 4000;
-    }
-    requestNotificationPermissions();
-    var instance = new Notification(
-            message, {
-                body: body,
-                icon: icon,
-                sound: sound
-            }
-    );
-    instance.onclick = function () {
-        // Something to do
-        console.log("notification");
-    };
-    instance.onerror = function () {
-        // Something to do
-        console.log(Error);
-    };
-    instance.onshow = function () {
-        // Something to do
-    };
-    instance.onclose = function () {
-        // Something to do
-    };
-    if (sound)
-    {
-        instance.sound;
-    }
-    setTimeout(instance.close.bind(instance), timeout);
-    return false;
-}
-// /**
-//  * Send Node Notification
-//  * @param {type} title
-//  * @param {type} message
-//  * @param {type} icon
-//  * @returns {undefined}
-//  */
-// function sendNodeNotification(title, message, icon) {
-//     socket.emit('new_notification', {
-//         message: message,
-//         title: title,
-//         icon: icon,
-//     });
-// }
-
- // ************************************* fa fa-arrow-left event ***************************************//
-const arrowLeft = document.querySelector('.fa-arrow-left');
-arrowLeft.addEventListener('click', () => {
-    window.history.go(-1);
 });
 

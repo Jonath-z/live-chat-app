@@ -20,7 +20,9 @@ const eventEmitter = new EventEmitter();
 const url = require('url');
 const querystring = require('querystring');
 const circularFix = require('circular-ref-fix');
+const { WebPushError } = require('web-push');
 const createRefs = circularFix.createRefs;
+const webpush = require('web-push');
 
 
 
@@ -30,8 +32,15 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/statics', express.static(path.join(__dirname, './js')));
 app.use('/static', express.static(path.join(__dirname, './css')));
+app.use('/publics', express.static(path.join(__dirname, '/firebase-messaging-sw.js')));
 app.set('view engine', 'ejs');
 
+// ************************ VAPID keys**********************************************************//
+const publicVapidKey = 'BB0WyTk1MsxWf49VE3QkDImOQ6JPMP4gCC-7XpYjHILgW5alnlpQQKKbzj3RHYs_emPa2YJxSGYJVlIgwZwraXs';
+const privateVapidKey = 'TYS2EPLVxQsaIxR4zQLNBCPd1AG0cIumA6SBhrcZsqE';
+
+// ****************************setting vapig keys details***************************************//
+webpush.setVapidDetails('mailto:jonathanzihindula95@gmail.com', publicVapidKey,privateVapidKey);
 
 // ******************************** firestore initialization *******************************************//
 firestore.initializeApp({
@@ -43,6 +52,20 @@ const db = firestore.firestore();
 mongoose.connect(`${process.env.MONGO_DATABASE}`, {useNewUrlParser: true, useUnifiedTopology: true});
 const mongodb = mongoose.connection;
 
+//**********************************subscribe route************************************************//
+// app.post('/subscribe', (req, res) => {
+//     //get push subscription object from the request
+//     const subscription = req.body;
+//     console.log(subscription);
+//     //send status 201 for the request
+//     const result = res.status(201).json({})
+//     // console.log(result);
+//     //create paylod: specified the detals of the push notification
+//     const payload = JSON.stringify({ title: 'New message' });
+
+//     //pass the object into sendNotification fucntion and catch any error
+//     webpush.sendNotification(subscription, payload).catch(err => console.error(err));
+// });
 
 app.get('/', (req, res) => {
     res.redirect("/user/login");
