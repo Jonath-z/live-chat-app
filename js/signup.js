@@ -22,15 +22,15 @@ const passwordInput = document.getElementById('password');
 const btn = document.getElementById('signup');
 
 btn.addEventListener('click', () => {
-  const passWord = passwordInput.value;
-  const userName = userNameInput.value;
+  const passWord = passwordInput.value.trim();
+  const userName = userNameInput.value.trim();
   const data = {
     name: userName,
     id: Date.now(),
   }
-  console.log(data, passWord.length);
+  // console.log(data, passWord.length);
 
-  if (data.name !== "") {
+  if (data.name == "") {
     userNameInput.value = "please complete your name";
   }
   if (data.name !== "" && passWord.length >= 4) {
@@ -39,7 +39,7 @@ btn.addEventListener('click', () => {
       // get the default profile url
       await storage.ref('default_profile/' + 'default-profile.png').getDownloadURL()
         .then((url) => {
-          console.log(url);
+          // console.log(url);
               
           // fetching the response to the server
           fetch('../signup/user', {
@@ -53,15 +53,26 @@ btn.addEventListener('click', () => {
               url: url,
               password: passWord
             })
+          }).then(res => {
+            return res.text();
+          }).then(text => {
+            // console.log(text);
+            if (text !== "succed") {
+              const signupFailed = document.querySelector('.signupFailed');
+              signupFailed.style.color = "red";
+              signupFailed.style.textAlign = "center";
+              signupFailed.innerHTML = `${data.name}: ${text}`;
+            } else {
+              window.open('../user/login', '_self');
+            }
           })
         });
     }
     getURL();
-    window.open('../user/login', 'self');
     passwordInput.value = "";
     userNameInput.value = "";
   }
   
-}, { once: true });
+});
 
             

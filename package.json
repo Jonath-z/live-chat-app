@@ -10,6 +10,7 @@
   "author": "jo]]",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "circular-ref-fix": "^1.0.2",
     "dotenv": "^10.0.0",
@@ -24,6 +25,7 @@
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
     "path": "^0.12.7",
+    "push.js": "^1.0.12",
     "querystring": "^0.2.0",
     "serve-favicon": "^2.5.0",
     "socket.io": "^4.1.2",
@@ -32,5 +34,5 @@
   },
   "engines": {
     "node": "16.2.0"
-    }
+  }
 }

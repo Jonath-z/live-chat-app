@@ -20,9 +20,10 @@ fetch('../all/users')
         // console.log(data);
         const navbarImage = document.querySelector('.chatProfile');
         const deleteProfile = navbarImage.src;
-        const ddeleteUSerName = navbarImage.nextSibling.firstChild.data;
+        const ddeleteUSerName = document.querySelector('.userName');
+        const deletedUserName = ddeleteUSerName.innerHTML;
         data.find(function (posts, index) {
-            if (posts.data.name == `${ddeleteUSerName}` && posts.defaultProfile == `${deleteProfile}`) {
+            if (posts.data.name == `${deletedUserName}` && posts.defaultProfile == `${deleteProfile}`) {
                 // console.log(posts);
                 // console.log(index);
                 for (let i = 0; i < data.length; i++) {
@@ -315,6 +316,8 @@ fetch('../all/users')
             const navbardiv = document.querySelector('.chatProfile');
             const userProfile = navbardiv.src;
             const userName = navbardiv.nextSibling.firstChild.data;
+            const userNamePara = document.querySelector('.userName');
+            // console.log(userNamePara.innerHTML);
             // console.log(userProfile, userName);
             // console.log(navbardiv);
             const chatUserSection = document.querySelector('.chatUsers');
@@ -450,6 +453,7 @@ fetch('../all/users')
                             function () {
                                 uploadTask.snapshot.ref.getDownloadURL().then(function (url) {
                                     console.log(url);
+                                    navbardiv.src = `${url}`;
                                     fetch('../update/user/profile', {
                                         method: "POST",
                                         headers: {
@@ -516,6 +520,8 @@ fetch('../all/users')
                                 const newPassword = newPasswordInput.value;
                                 const newNameInput = document.querySelector('.inputNewName');
                                 const newName = newNameInput.value;
+                                userNamePara.innerHTML = `${newName}`;
+                                // ************* fetch for updating user's name and password************//
                                 // ************* fetch for updating user's name and password************//
                                 fetch('../update/user/name/password', {
                                     method: "POST",
@@ -530,8 +536,8 @@ fetch('../all/users')
                                         newPassword: `${newPassword}`
                                     })
                                 });
-                        
-                            });
+                                window.document.location.reload();
+                            }, { once: true });
                         }
                     }
                 }

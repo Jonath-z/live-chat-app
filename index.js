@@ -23,7 +23,7 @@ const circularFix = require('circular-ref-fix');
 const { WebPushError } = require('web-push');
 const createRefs = circularFix.createRefs;
 const webpush = require('web-push');
-
+const bcrypt = require('bcrypt');
 
 
 // middleware
@@ -32,12 +32,12 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/statics', express.static(path.join(__dirname, './js')));
 app.use('/static', express.static(path.join(__dirname, './css')));
-app.use('/publics', express.static(path.join(__dirname, '/firebase-messaging-sw.js')));
+app.use('/publics', express.static(path.join(__dirname, './views')));
 app.set('view engine', 'ejs');
 
 // ************************ VAPID keys**********************************************************//
-const publicVapidKey = 'BB0WyTk1MsxWf49VE3QkDImOQ6JPMP4gCC-7XpYjHILgW5alnlpQQKKbzj3RHYs_emPa2YJxSGYJVlIgwZwraXs';
-const privateVapidKey = 'TYS2EPLVxQsaIxR4zQLNBCPd1AG0cIumA6SBhrcZsqE';
+const publicVapidKey = 'BH6C9KUzBHe8tFJ7drhsRdu-vVh1MeM5RY-xzNGAQnu8miOcCXzUHo-58npoKuCFb5iHRcZPDUmKvOJ9mX7Cssk';
+const privateVapidKey = 'KkvubtpQWE2kiyw0pR2nqQewUXSmQqvPZZHXCRFyB8w';
 
 // ****************************setting vapig keys details***************************************//
 webpush.setVapidDetails('mailto:jonathanzihindula95@gmail.com', publicVapidKey,privateVapidKey);
@@ -53,19 +53,27 @@ mongoose.connect(`${process.env.MONGO_DATABASE}`, {useNewUrlParser: true, useUni
 const mongodb = mongoose.connection;
 
 //**********************************subscribe route************************************************//
-// app.post('/subscribe', (req, res) => {
-//     //get push subscription object from the request
-//     const subscription = req.body;
-//     console.log(subscription);
-//     //send status 201 for the request
-//     const result = res.status(201).json({})
-//     // console.log(result);
-//     //create paylod: specified the detals of the push notification
-//     const payload = JSON.stringify({ title: 'New message' });
+app.post('/subscribe', (req, res) => {
+    //get push subscription object from the request
+    const subscription = req.body;
+    console.log(subscription);
+    //send status 201 for the request
+    const result = res.status(201);
 
-//     //pass the object into sendNotification fucntion and catch any error
-//     webpush.sendNotification(subscription, payload).catch(err => console.error(err));
-// });
+ const options = {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+        }
+    }
+
+    //  console.log(result);
+    //create paylod: specified the detals of the push notification
+    const payload = JSON.stringify({ title: 'New message' });
+
+    //pass the object into sendNotification fucntion and catch any error
+    webpush.sendNotification(subscription, payload,options).catch(err => console.error(err));
+});
 
 app.get('/', (req, res) => {
     res.redirect("/user/login");
@@ -103,15 +111,32 @@ app.get('/signup', (req, res) => {
 
 app.post('/signup/user', (req, res) => {
     // console.log(req.body);
-    async function setUser() {
-        const UserData = {
-            data: req.body.response,
-            defaultProfile: req.body.url,
-            password: req.body.password
+    const userDoc = db.collection('user');
+    async function chekValidUserName() {
+        const snapshot = await userDoc.where("data.name", "==", req.body.response.name).get();
+        if (snapshot.empty) {
+            async function setUser() {
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(req.body.password, salt);
+                // console.log(hashedPassword);
+                const UserData = {
+                    data: req.body.response,
+                    defaultProfile: req.body.url,
+                    password: hashedPassword
+                }
+                db.collection('user').doc(`${req.body.response.id}`).set(UserData);
+                res.send('succed');
+            }
+            setUser();
         }
-        db.collection('user').doc(`${req.body.response.id}`).set(UserData);
+        else {
+            console.log('fail to signup');
+            res.send('this username is used,please change the username');
+        }
+        
     }
-    setUser();
+    chekValidUserName();
+
 });
 
 // app.get('/return', (req, res) => {
@@ -121,16 +146,28 @@ app.post('/signup/user', (req, res) => {
 app.post('/login', (req, res) => {
     const userDoc = db.collection('user');
     // console.log(req.body);
+    
     async function getUser() {
-        const snapshot = await userDoc.where("password", "==", req.body.password).where("data.name", "==", req.body.name).get();
+        const name = req.body.name.trim();
+        // console.log(name);
+        const snapshot = await userDoc.where("data.name", "==",name).get();
         if (snapshot.empty) {
             console.log("no data");
             res.redirect('/');
-        } else {
+        }
+        else {
             snapshot.forEach(doc => {
-                res.render('chat', {
-                    data: doc.data()
-                });
+                async function chekPassword() {
+                    const validPassword = await bcrypt.compare(req.body.password, doc.data().password);
+                    // console.log(validPassword);
+                    if (validPassword) {
+                        res.render('chat', {
+                            data: doc.data()
+                        });
+                    } else {
+                        res.send('Invalid password');
+                    }
+                } chekPassword();
                 
             });
         }
@@ -214,7 +251,7 @@ app.get('/chat', (req, res) => {
         // mongodb.collection("queries").deleteOne(lastChild);
     });
 
-    
+    // push.create('hello');
         //  res.status(307).send('chat'); 
 
 });
@@ -402,10 +439,14 @@ app.post('/update/user/name/password', (req, res) => {
             console.log("no data");
         } else {
             snapshot.forEach(doc => {
-                userDoc.doc(doc.id).update({
-                    "data.name": `${req.body.newName}`,
-                    "password": `${req.body.newPassword}`
-                });
+                async function cryptPassword() {
+                    const salt = await bcrypt.genSalt(10);
+                    const hashedPassword = await bcrypt.hash(req.body.newPassword, salt);
+                    userDoc.doc(doc.id).update({
+                        "data.name": `${req.body.newName}`,
+                        "password": `${hashedPassword}`
+                    });
+                } cryptPassword();
             });
             res.send(req.body);
         }

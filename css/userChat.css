@@ -21,7 +21,7 @@ html,body{
     top:65px;
     margin-bottom: 50px;
     /* overflow: auto; */
-    position: absolute;
+    /* position: absolute; */
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     height: 100vh;
@@ -49,7 +49,7 @@ header{
     grid-template-columns: 0.5fr 0.5fr 2fr;
     background: rgb(0,0,20);
     color: white;
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 100%;
     height: 65px;
@@ -68,6 +68,7 @@ header{
     overflow-y: auto;
     margin-top: -16px;
     bottom: 50px;
+
     /* display: flex;
     flex-direction: ; */
     
