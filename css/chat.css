@@ -143,6 +143,7 @@ label{
     border-right: none;
     margin-left: 10px;
     
+    
 }
 .inputNewName{
     border: 1px solid rgb(0,0,20);
@@ -152,6 +153,8 @@ label{
     border-left: none;
     border-right: none;
     margin-left: 20px;
+    margin-top: 20px;
+    
 }
 
 .updateButton{
@@ -174,6 +177,61 @@ label{
 }
 #progressBar{
     width: 20em;
+}
+.deconnectButton{
+    background: rgb(0,0,20);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 30px;
+    font-family: sans-serif;
+    width: 10em;
+    height: 25px;
+}
+.userPublicDetails{
+    box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+}
+.divBio{
+    text-align: center;
+    margin-top: 30px;
+}
+.bioInput{
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    outline: none;
+    margin-left: 30px;
+    width: 181px;
+}
+
+.bioLabel{
+    float: left;
+}
+.userNamePara{
+    float: left;
+}
+.labelPassword{
+    float: left;
+}
+.updatePara{
+    text-align: center;
+    font-family: sans-serif;
+}
+.profileOptionSection{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
+    text-align: center;
+    background:rgb(235, 235, 235);
+    border-radius: 30px;
+    margin: -30px 10px 0 10px;
+}
+.divFollowers,.divFollowing,.divProfile{
+    border-radius: 30px;
+    cursor: pointer;
+}
+p{
+    font-family: sans-serif;
 }
 /* ********************************************************chat page *************************************************** */
 .hr{

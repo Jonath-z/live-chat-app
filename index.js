@@ -316,6 +316,28 @@ app.get('/all/user/followers/research', (req, res) => {
         res.send(data);
     });
 });
+// ************************** user followers from fetch (352 chat.js)**********************************//
+app.post('/user/followers', (req, res) => {
+    mongodb.collection("users-followers").find({
+       followedName:`${req.body.userName}` 
+    }).toArray((err, data) => {
+        if (err) {
+            console.log(err);
+        }
+        res.send(data);
+    })
+})
+// ***************************user following from fetch(392 chat.js)*********************************//
+app.post('/user/following', (req, res) => {
+    mongodb.collection("users-followers").find({
+       followerName:`${req.body.userName}` 
+    }).toArray((err, data) => {
+        if (err) {
+            console.log(err);
+        }
+        res.send(data);
+    })
+})
 // ***************************** unfollow user setting ******************************************* //
 app.post('/unfollow', (req, res) => {
     mongodb.collection("users-followers").find({
