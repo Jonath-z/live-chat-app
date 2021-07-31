@@ -58,7 +58,7 @@ nav{
 }
 .chatUsers{
     margin-top: 20px;
-    margin-bottom: 45px;
+    padding-bottom: 50px;
 }
 .icons {
     position: fixed;
