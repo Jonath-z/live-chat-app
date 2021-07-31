@@ -141,7 +141,7 @@ label{
     border-top: none;
     border-left: none;
     border-right: none;
-    margin-left: 10px;
+    margin-left: -10px;
     
     
 }
@@ -188,30 +188,34 @@ label{
     width: 10em;
     height: 25px;
 }
-.userPublicDetails{
-    box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
-}
+/* .userPublicDetails{ */
+    /* box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; */
+/* } */
+
 .divBio{
     text-align: center;
     margin-top: 30px;
 }
 .bioInput{
-    border-top: none;
-    border-left: none;
-    border-right: none;
     outline: none;
     margin-left: 30px;
     width: 181px;
+    border: 1px solid rgb(0,0,20);
+    border-radius: 3px;
 }
 
 .bioLabel{
     float: left;
+    margin-left: 30px;
 }
 .userNamePara{
     float: left;
+    margin-left: 30px;
+    margin-top: 20px;
 }
 .labelPassword{
     float: left;
+    margin-left: 30px;
 }
 .updatePara{
     text-align: center;
