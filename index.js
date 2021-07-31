@@ -25,7 +25,6 @@ const createRefs = circularFix.createRefs;
 const webpush = require('web-push');
 const bcrypt = require('bcrypt');
 
-
 // middleware
 app.use(favicon(path.join(__dirname, './public', 'favicon.ico')));
 app.use(express.json());
@@ -37,7 +36,7 @@ app.set('view engine', 'ejs');
 
 // ************************ VAPID keys**********************************************************//
 const publicVapidKey = 'BH6C9KUzBHe8tFJ7drhsRdu-vVh1MeM5RY-xzNGAQnu8miOcCXzUHo-58npoKuCFb5iHRcZPDUmKvOJ9mX7Cssk';
-const privateVapidKey = 'KkvubtpQWE2kiyw0pR2nqQewUXSmQqvPZZHXCRFyB8w';
+const privateVapidKey = `${process.env.PRIVATE_VAPID_KEY}`;
 
 // ****************************setting vapig keys details***************************************//
 webpush.setVapidDetails('mailto:jonathanzihindula95@gmail.com', publicVapidKey,privateVapidKey);
@@ -53,27 +52,27 @@ mongoose.connect(`${process.env.MONGO_DATABASE}`, {useNewUrlParser: true, useUni
 const mongodb = mongoose.connection;
 
 //**********************************subscribe route************************************************//
-app.post('/subscribe', (req, res) => {
-    //get push subscription object from the request
-    const subscription = req.body;
-    console.log(subscription);
-    //send status 201 for the request
-    const result = res.status(201);
+// app.post('/subscribe', (req, res) => {
+//     //get push subscription object from the request
+//     const subscription = req.body;
+//     console.log(subscription);
+//     //send status 201 for the request
+//     const result = res.status(201);
 
- const options = {
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-        }
-    }
+//  const options = {
+//         headers: {
+//             "Access-Control-Allow-Origin": "*",
+//             "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+//         }
+//     }
 
-    //  console.log(result);
-    //create paylod: specified the detals of the push notification
-    const payload = JSON.stringify({ title: 'New message' });
+//     //  console.log(result);
+//     //create paylod: specified the detals of the push notification
+//     const payload = JSON.stringify({ title: 'New message' });
 
-    //pass the object into sendNotification fucntion and catch any error
-    webpush.sendNotification(subscription, payload,options).catch(err => console.error(err));
-});
+//     //pass the object into sendNotification fucntion and catch any error
+//     webpush.sendNotification(subscription, payload,options).catch(err => console.error(err));
+// });
 
 app.get('/', (req, res) => {
     res.redirect("/user/login");
@@ -122,7 +121,8 @@ app.post('/signup/user', (req, res) => {
                 const UserData = {
                     data: req.body.response,
                     defaultProfile: req.body.url,
-                    password: hashedPassword
+                    password: hashedPassword,
+                    bio:req.body.bio
                 }
                 db.collection('user').doc(`${req.body.response.id}`).set(UserData);
                 res.send('succed');
@@ -150,7 +150,7 @@ app.post('/login', (req, res) => {
     async function getUser() {
         const name = req.body.name.trim();
         // console.log(name);
-        const snapshot = await userDoc.where("data.name", "==",name).get();
+        const snapshot = await userDoc.where("data.name", "==", name).get();
         if (snapshot.empty) {
             console.log("no data");
             res.redirect('/');
@@ -164,16 +164,20 @@ app.post('/login', (req, res) => {
                         res.render('chat', {
                             data: doc.data()
                         });
-                    } else {
-                        res.send('Invalid password');
+                    }
+                   else if (!validPassword && req.body.password === `${doc.data().password}`) {
+                        res.render('chat', {
+                            data: doc.data()
+                        });
+                    }
+                    else {
+                        res.send('<h1>Invalid password</h1>');
                     }
                 } chekPassword();
-                
             });
         }
     }
     getUser();
-    
 });
 
 // *****************************************/get all users/**********************************************************
@@ -210,13 +214,6 @@ app.get('/live/chat', (req, res) => {
     res.render('userChat');
 });
 
-// app.get('/chat', (req, res) => {
-    
-//     res.send('chat');
-//     eventEmitter.on('openChat', (userAccountProfile, userAccountName, url, receiver) => {
-//       console.log(userAccountProfile, userAccountName, url, receiver);
-//     });
-// });
 app.post('/live', function (req, res){
     res.redirect(url.format({
         pathname: "/chat",
@@ -255,8 +252,51 @@ app.get('/chat', (req, res) => {
         //  res.status(307).send('chat'); 
 
 });
+// ********************** form fetch public profile************************//
+app.post('/public/profile', (req, res) => {
+    const userDoc = db.collection('user');
+    // console.log(req.body);
+    async function getUserDetails() {
+        const snapshot = await userDoc.where("data.name", "==", `${req.body.name}`).get();
+        // if (snapshot.empty) {
+        //     console.log("no data");
+        // }
+        snapshot.forEach(doc => {
+            res.redirect(url.format({
+                pathname: "/profile",
+                query: {
+                    "bio": `${doc.data().bio}`,
+                    "name": `${req.body.name}`,
+                    "profilePic": `${req.body.src}`
+                }
+            }));
+        });
 
-
+    }
+    getUserDetails();
+});
+// ***************************get public profile page***********************************//
+app.get('/profile', (req, res) => {
+    // console.log(req.query);
+    if (req.query.bio && req.query.name && req.query.profilePic !== "undefined") {
+        mongodb.collection("public-profile-queries").insertOne(req.query);
+        // console.log(req.query);
+    }
+        mongodb.collection("public-profile-queries").find({}).toArray((err, data) => {
+            if (err) {
+                console.log(err);
+            }
+            const lastChild = data[data.length - 1];
+            // console.log(lastChild);
+            res.render('profile', {
+                img: lastChild.profilePic,
+                bio: lastChild.bio,
+                name: lastChild.name
+            });
+        
+        });
+    
+});
 // ********************* from fetch (socket.js) updating user's socketID*******************//
 app.post('/update/socket', (req, res) => {
     // console.log(req.body);
@@ -461,14 +501,28 @@ app.post('/update/user/name/password', (req, res) => {
             console.log("no data");
         } else {
             snapshot.forEach(doc => {
-                async function cryptPassword() {
-                    const salt = await bcrypt.genSalt(10);
-                    const hashedPassword = await bcrypt.hash(req.body.newPassword, salt);
+
+                if (req.body.newName !== "") {
                     userDoc.doc(doc.id).update({
                         "data.name": `${req.body.newName}`,
-                        "password": `${hashedPassword}`
                     });
-                } cryptPassword();
+                }
+                if (req.body.newPassword !== "") {
+                    async function cryptPassword() {
+                        const salt = await bcrypt.genSalt(10);
+                        const hashedPassword = await bcrypt.hash(req.body.newPassword, salt);
+                        userDoc.doc(doc.id).update({
+                            "password": `${hashedPassword}`
+                        });
+                    }
+                    cryptPassword();
+                }
+                if (req.body.bio !== "") {
+                    userDoc.doc(doc.id).update({
+                        bio: `${req.body.bio}`
+                    });
+                }
+            
             });
             res.send(req.body);
         }
