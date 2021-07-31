@@ -4,18 +4,28 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>Profile</title>
 </head>
 <body>
  <section class="profileSection">
+  <div class="arrowdiv"><i class="fa fa-arrow-left"></i></div>
     <div class="profileDiv">
-      <%- `<img src="" alt="image" class="userProfile">` %>
+      <%- `<img src="${img}" alt="image" class="userProfile">` %>
     </div>
  </section>
  <section class="userDetails">
-
+<div class="ProfileName">
+  <%- `<h3>${name}</h3>` %> 
+  <% if (bio !== "null") { %>
+   <%- `<p>${bio}</p>` %> 
+  <% } %>
+ 
+</div>
  </section>
-    <script src="/statics/socket.js"></script>
+    <script src="/statics/profile.js"></script>
 </body>
 </html>
 
