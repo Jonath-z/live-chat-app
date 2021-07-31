@@ -51,7 +51,8 @@ btn.addEventListener('click', () => {
             body: JSON.stringify({
               response: data,
               url: url,
-              password: passWord
+              password: passWord,
+              bio:"null"
             })
           }).then(res => {
             return res.text();
