@@ -76,6 +76,7 @@ fetch('../user/message')
                 div.style.width = "70%";
 
                 messagePara.style.marginLeft = "5px";
+                messagePara.style.paddingRight = "5px";
                 div.style.overflowWrap = "anywhere";
                 // div.style.paddingBottom = "50px";
                 div.append(messagePara);
@@ -217,50 +218,50 @@ sendButton.addEventListener('click', () => {
         });
 
         // // ***********************send notification ****************************************************************//
-        const publicVapidKey = 'BH6C9KUzBHe8tFJ7drhsRdu-vVh1MeM5RY-xzNGAQnu8miOcCXzUHo-58npoKuCFb5iHRcZPDUmKvOJ9mX7Cssk';
+        // const publicVapidKey = 'BH6C9KUzBHe8tFJ7drhsRdu-vVh1MeM5RY-xzNGAQnu8miOcCXzUHo-58npoKuCFb5iHRcZPDUmKvOJ9mX7Cssk';
 
-        function urlBase64ToUint8Array(base64String) {
-            const padding = "=".repeat((4 - base64String.length % 4) % 4);
-            const base64 = (base64String + padding)
-                .replace(/\-/g, "+")
-                .replace(/_/g, "/");
+        // function urlBase64ToUint8Array(base64String) {
+        //     const padding = "=".repeat((4 - base64String.length % 4) % 4);
+        //     const base64 = (base64String + padding)
+        //         .replace(/\-/g, "+")
+        //         .replace(/_/g, "/");
   
-            const rawData = window.atob(base64);
-            const outputArray = new Uint8Array(rawData.length);
+        //     const rawData = window.atob(base64);
+        //     const outputArray = new Uint8Array(rawData.length);
   
-            for (let i = 0; i < rawData.length; ++i) {
-                outputArray[i] = rawData.charCodeAt(i);
-            }
-            return outputArray;
-        }
-        // ******************************check if the service worker is working on the current browser***********************//
-        if ('serviceWorker' in navigator) {
-            send().catch(err => console.error(err));
-        }
-        //****************register the service worker, register our push api, send the notification*****************************//
-        async function send() {
-            //register service worker
-            const register = await navigator.serviceWorker.register('/publics/worker.js', {
-                scope: 'publics/'
-            });
+        //     for (let i = 0; i < rawData.length; ++i) {
+        //         outputArray[i] = rawData.charCodeAt(i);
+        //     }
+        //     return outputArray;
+        // }
+        // // ******************************check if the service worker is working on the current browser***********************//
+        // if ('serviceWorker' in navigator) {
+        //     send().catch(err => console.error(err));
+        // }
+        // //****************register the service worker, register our push api, send the notification*****************************//
+        // async function send() {
+        //     //register service worker
+        //     const register = await navigator.serviceWorker.register('/publics/worker.js', {
+        //         scope: 'publics/'
+        //     });
 
-            //register push
-            const subscription = await register.pushManager.subscribe({
-                userVisibleOnly: true,
+        //     //register push
+        //     const subscription = await register.pushManager.subscribe({
+        //         userVisibleOnly: true,
 
-                //public vapid key
-                applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
-            });
-            // console.log(subscription);
-            //Send push notification
-            await fetch("/subscribe", {
-                method: "POST",
-                body: JSON.stringify(subscription),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
-        }
+        //         //public vapid key
+        //         applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+        //     });
+        //     // console.log(subscription);
+        //     //Send push notification
+        //     await fetch("/subscribe", {
+        //         method: "POST",
+        //         body: JSON.stringify(subscription),
+        //         headers: {
+        //             "Content-Type": "application/json"
+        //         }
+        //     });
+        // }
         
         
         messageInput.value = '';
@@ -304,6 +305,7 @@ socket.on('message', (data) => {
         div.style.width = "fit-content";
         div.style.overflowWrap = "anywhere";
         para.style.marginLeft = "5px";
+        para.style.paddingRight = "5px"
         div.append(para);
         
         messageDiv2.append(img, div);
